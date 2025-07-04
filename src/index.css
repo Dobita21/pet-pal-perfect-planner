@@ -3,74 +3,80 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Pet Pal Design System - Warm, friendly colors for pet care */
+/* Pet Pal Design System - New Color Hunt Palette */
 
 @layer base {
   :root {
-    --background: 248 252 255; /* Soft sky blue background */
-    --foreground: 47 54 64; /* Charcoal text */
+    --background: 43 40 27; /* Warm cream background converted to HSL */
+    --foreground: 199 55 32; /* Dark teal text */
 
     --card: 255 255 255; /* Pure white cards */
-    --card-foreground: 47 54 64;
+    --card-foreground: 199 55 32;
 
     --popover: 255 255 255;
-    --popover-foreground: 47 54 64;
+    --popover-foreground: 199 55 32;
 
-    --primary: 52 152 219; /* Friendly blue */
+    --primary: 199 55 32; /* Dark Teal #257180 */
     --primary-foreground: 255 255 255;
 
-    --secondary: 241 247 251; /* Light blue-gray */
-    --secondary-foreground: 47 54 64;
+    --secondary: 43 40 27; /* Cream #F2E5BF */
+    --secondary-foreground: 199 55 32;
 
-    --muted: 236 240 243; /* Subtle gray */
-    --muted-foreground: 116 125 136;
+    --muted: 43 35 22; /* Slightly darker cream */
+    --muted-foreground: 199 35 22;
 
-    --accent: 255 193 86; /* Warm orange accent */
-    --accent-foreground: 47 54 64;
+    --accent: 22 86 66; /* Orange #FD8B51 */
+    --accent-foreground: 255 255 255;
 
-    --destructive: 231 76 60; /* Soft red */
+    --destructive: 14 68 52; /* Burgundy #CB6040 */
     --destructive-foreground: 255 255 255;
 
-    --border: 220 226 230;
-    --input: 220 226 230;
-    --ring: 52 152 219;
+    --border: 43 30 18;
+    --input: 43 30 18;
+    --ring: 199 55 32;
 
-    --radius: 0.75rem; /* Slightly more rounded for friendliness */
+    --radius: 0.75rem;
 
-    /* Custom pet-themed colors */
-    --pet-green: 46 204 113; /* Healthy green */
-    --pet-purple: 155 89 182; /* Playful purple */
-    --pet-yellow: 241 196 15; /* Sunny yellow */
+    /* Custom pet-themed colors from the new palette */
+    --pet-teal: 199 55 32; /* #257180 */
+    --pet-cream: 43 40 27; /* #F2E5BF */
+    --pet-orange: 22 86 66; /* #FD8B51 */
+    --pet-burgundy: 14 68 52; /* #CB6040 */
+    
+    /* Keep some existing pet colors for variety */
+    --pet-green: 142 71 58; /* Healthy green */
+    --pet-purple: 271 47 71; /* Playful purple */
+    --pet-yellow: 48 89 61; /* Sunny yellow */
   }
 
   .dark {
-    --background: 47 54 64;
-    --foreground: 248 252 255;
+    --background: 199 55 15;
+    --foreground: 43 40 80;
 
-    --card: 55 63 75;
-    --card-foreground: 248 252 255;
+    --card: 199 45 20;
+    --card-foreground: 43 40 80;
 
-    --popover: 55 63 75;
-    --popover-foreground: 248 252 255;
+    --popover: 199 45 20;
+    --popover-foreground: 43 40 80;
 
-    --primary: 52 152 219;
+    --primary: 199 55 40;
     --primary-foreground: 255 255 255;
 
-    --secondary: 67 76 89;
-    --secondary-foreground: 248 252 255;
+    --secondary: 199 35 25;
+    --secondary-foreground: 43 40 80;
 
-    --muted: 67 76 89;
-    --muted-foreground: 186 192 199;
+    --muted: 199 35 25;
+    --muted-foreground: 43 35 60;
 
-    --accent: 255 193 86;
-    --accent-foreground: 47 54 64;
+    --accent: 22 86 66;
+    --accent-foreground: 255 255 255;
 
-    --destructive: 231 76 60;
+    --destructive: 14 68 52;
     --destructive-foreground: 255 255 255;
 
-    --border: 67 76 89;
-    --input: 67 76 89;
-    --ring: 52 152 219;
+    --border: 199 35 25;
+    --input: 199 35 25;
+    --ring: 199 55 40;
   }
 }
 
@@ -80,16 +86,16 @@
   }
   
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-pet-cream text-foreground font-sans;
   }
   
-  /* Custom pet-themed utilities */
+  /* Custom pet-themed utilities with new colors */
   .pet-gradient {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    background: linear-gradient(135deg, hsl(var(--pet-teal)) 0%, hsl(var(--pet-orange)) 100%);
   }
   
   .pet-card-shadow {
-    box-shadow: 0 4px 20px -4px rgba(52, 152, 219, 0.15);
+    box-shadow: 0 4px 20px -4px rgba(37, 113, 128, 0.15);
   }
   
   /* Smooth animations */

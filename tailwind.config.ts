@@ -56,6 +56,10 @@ export default {
 				'pet-green': 'hsl(var(--pet-green))',
 				'pet-purple': 'hsl(var(--pet-purple))',
 				'pet-yellow': 'hsl(var(--pet-yellow))',
+				'pet-teal': 'hsl(var(--pet-teal))',
+				'pet-cream': 'hsl(var(--pet-cream))',
+				'pet-orange': 'hsl(var(--pet-orange))',
+				'pet-burgundy': 'hsl(var(--pet-burgundy))',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
