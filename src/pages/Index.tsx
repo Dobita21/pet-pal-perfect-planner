@@ -1,10 +1,12 @@
-
 import React, { useState } from 'react';
 import MobileHeader from '@/components/layout/MobileHeader';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import PetCard from '@/components/pets/PetCard';
 import TaskCard from '@/components/schedule/TaskCard';
 import HealthCard from '@/components/health/HealthCard';
+import CalendarSchedule from '@/components/schedule/CalendarSchedule';
+import AddPetModal from '@/components/pets/AddPetModal';
+import AddTaskModal from '@/components/schedule/AddTaskModal';
 import { usePetData } from '@/hooks/usePetData';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,13 +14,29 @@ import { Plus, Calendar, Heart, TrendingUp } from 'lucide-react';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('schedule');
-  const { pets, tasks, healthMetrics, completeTask, setReminder } = usePetData();
+  const [showAddPetModal, setShowAddPetModal] = useState(false);
+  const [showAddTaskModal, setShowAddTaskModal] = useState(false);
+  const { pets, tasks, healthMetrics, completeTask, setReminder, addPet, addTask } = usePetData();
 
   const todaysTasks = tasks.filter(task => !task.completed);
   const completedTasks = tasks.filter(task => task.completed);
 
   const renderScheduleTab = () => (
     <div className="space-y-6">
+      {/* Hero Banner */}
+      <div className="relative h-48 rounded-2xl overflow-hidden pet-gradient">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white">
+            <h1 className="text-3xl font-bold mb-2">Welcome to Pet Pal</h1>
+            <p className="text-lg opacity-90">Your pet's health and happiness companion</p>
+          </div>
+        </div>
+        <div className="absolute top-4 right-4">
+          <span className="text-4xl">🐾</span>
+        </div>
+      </div>
+
       {/* Quick Stats */}
       <div className="grid grid-cols-3 gap-4">
         <Card className="p-4 text-center">
@@ -39,7 +57,7 @@ const Index = () => {
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-foreground">Today's Tasks</h2>
-          <Button size="sm" className="bg-primary hover:bg-primary/90">
+          <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={() => setShowAddTaskModal(true)}>
             <Plus className="h-4 w-4 mr-1" />
             Add
           </Button>
@@ -57,86 +75,68 @@ const Index = () => {
         </div>
       </div>
 
-      {/* My Pets */}
+      {/* My Pets - Horizontal Scroll */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-foreground">My Pets</h2>
-          <Button size="sm" variant="outline">
+          <Button size="sm" variant="outline" onClick={() => setShowAddPetModal(true)}>
             <Plus className="h-4 w-4 mr-1" />
             Add Pet
           </Button>
         </div>
         
-        <div className="space-y-3">
+        <div className="flex overflow-x-auto pb-4 space-x-4 scrollbar-hide">
           {pets.map(pet => (
-            <PetCard
-              key={pet.id}
-              pet={pet}
-              onSelect={(pet) => console.log('Selected pet:', pet.name)}
-            />
+            <div key={pet.id} className="min-w-[280px] flex-shrink-0">
+              <PetCard
+                pet={pet}
+                onSelect={(pet) => console.log('Selected pet:', pet.name)}
+              />
+            </div>
           ))}
         </div>
       </div>
+
+      {/* Health Overview - Only show if pets exist */}
+      {pets.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-foreground">Health Overview</h2>
+            <Button size="sm" className="bg-pet-green hover:bg-pet-green/90">
+              <Plus className="h-4 w-4 mr-1" />
+              Log Data
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            {healthMetrics.slice(0, 4).map(metric => (
+              <HealthCard
+                key={metric.id}
+                metric={metric}
+                onClick={(metric) => console.log('Selected metric:', metric.title)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 
   const renderHealthTab = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-foreground">Health Overview</h2>
-        <Button size="sm" className="bg-pet-green hover:bg-pet-green/90">
-          <Plus className="h-4 w-4 mr-1" />
-          Log Data
-        </Button>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        {healthMetrics.map(metric => (
-          <HealthCard
-            key={metric.id}
-            metric={metric}
-            onClick={(metric) => console.log('Selected metric:', metric.title)}
-          />
-        ))}
-      </div>
-
-      {/* Quick Actions */}
-      <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-foreground">Quick Actions</h3>
-        <div className="grid grid-cols-2 gap-3">
-          <Card className="p-4 cursor-pointer hover:shadow-lg transition-shadow">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Calendar className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <div className="font-medium">Vet Visit</div>
-                <div className="text-sm text-muted-foreground">Schedule appointment</div>
-              </div>
-            </div>
-          </Card>
-          
-          <Card className="p-4 cursor-pointer hover:shadow-lg transition-shadow">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-pet-green/10 flex items-center justify-center">
-                <TrendingUp className="h-5 w-5 text-pet-green" />
-              </div>
-              <div>
-                <div className="font-medium">Weight Log</div>
-                <div className="text-sm text-muted-foreground">Track progress</div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </div>
-    </div>
+    <CalendarSchedule 
+      tasks={tasks}
+      onAddTask={() => setShowAddTaskModal(true)}
+      onCompleteTask={completeTask}
+      onEditTask={(task) => console.log('Edit task:', task)}
+      onDeleteTask={(taskId) => console.log('Delete task:', taskId)}
+    />
   );
 
   const renderTasksTab = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-foreground">All Tasks</h2>
-        <Button size="sm" className="bg-primary hover:bg-primary/90">
+        <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={() => setShowAddTaskModal(true)}>
           <Plus className="h-4 w-4 mr-1" />
           New Task
         </Button>
@@ -223,7 +223,7 @@ const Index = () => {
   const getPageTitle = () => {
     switch (activeTab) {
       case 'schedule': return 'Pet Pal';
-      case 'health': return 'Health';
+      case 'health': return 'Schedule';
       case 'tasks': return 'Tasks';
       case 'profile': return 'Profile';
       default: return 'Pet Pal';
@@ -249,6 +249,19 @@ const Index = () => {
       </main>
       
       <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      
+      <AddPetModal 
+        isOpen={showAddPetModal}
+        onClose={() => setShowAddPetModal(false)}
+        onAddPet={addPet}
+      />
+      
+      <AddTaskModal
+        isOpen={showAddTaskModal}
+        onClose={() => setShowAddTaskModal(false)}
+        onAddTask={addTask}
+        pets={pets}
+      />
     </div>
   );
 };

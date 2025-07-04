@@ -98,6 +98,16 @@
     box-shadow: 0 4px 20px -4px rgba(37, 113, 128, 0.15);
   }
   
+  /* Scrollbar hiding for horizontal scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
   /* Smooth animations */
   .animate-bounce-gentle {
     animation: bounce-gentle 2s infinite;

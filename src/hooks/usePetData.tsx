@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 
 export interface Pet {
@@ -23,6 +22,7 @@ export interface Task {
   petName: string;
   completed: boolean;
   priority: 'high' | 'medium' | 'low';
+  date?: Date;
 }
 
 export interface HealthMetric {
@@ -36,7 +36,7 @@ export interface HealthMetric {
 }
 
 export const usePetData = () => {
-  const [pets] = useState<Pet[]>([
+  const [pets, setPets] = useState<Pet[]>([
     {
       id: '1',
       name: 'Buddy',
@@ -74,7 +74,8 @@ export const usePetData = () => {
       type: 'walk',
       petName: 'Buddy',
       completed: true,
-      priority: 'high'
+      priority: 'high',
+      date: new Date()
     },
     {
       id: '2',
@@ -84,7 +85,8 @@ export const usePetData = () => {
       type: 'feeding',
       petName: 'Whiskers',
       completed: true,
-      priority: 'high'
+      priority: 'high',
+      date: new Date()
     },
     {
       id: '3',
@@ -94,7 +96,8 @@ export const usePetData = () => {
       type: 'medication',
       petName: 'Buddy',
       completed: false,
-      priority: 'high'
+      priority: 'high',
+      date: new Date()
     },
     {
       id: '4',
@@ -104,7 +107,8 @@ export const usePetData = () => {
       type: 'walk',
       petName: 'Buddy',
       completed: false,
-      priority: 'medium'
+      priority: 'medium',
+      date: new Date()
     },
     {
       id: '5',
@@ -114,7 +118,8 @@ export const usePetData = () => {
       type: 'play',
       petName: 'Whiskers',
       completed: false,
-      priority: 'low'
+      priority: 'low',
+      date: new Date()
     }
   ]);
 
@@ -168,11 +173,30 @@ export const usePetData = () => {
     // In a real app, this would set up a notification
   };
 
+  const addPet = (petData: Omit<Pet, 'id'>) => {
+    const newPet: Pet = {
+      ...petData,
+      id: Date.now().toString()
+    };
+    setPets(prev => [...prev, newPet]);
+  };
+
+  const addTask = (taskData: Omit<Task, 'id' | 'completed'>) => {
+    const newTask: Task = {
+      ...taskData,
+      id: Date.now().toString(),
+      completed: false
+    };
+    setTasks(prev => [...prev, newTask]);
+  };
+
   return {
     pets,
     tasks,
     healthMetrics,
     completeTask,
-    setReminder
+    setReminder,
+    addPet,
+    addTask
   };
 };

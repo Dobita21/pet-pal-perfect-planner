@@ -8,8 +8,8 @@ interface BottomNavigationProps {
 }
 
 const tabs = [
-  { id: 'schedule', label: 'Schedule', icon: Calendar },
-  { id: 'health', label: 'Health', icon: Heart },
+  { id: 'schedule', label: 'Home', icon: Calendar },
+  { id: 'health', label: 'Schedule', icon: Calendar },
   { id: 'tasks', label: 'Tasks', icon: List },
   { id: 'profile', label: 'Profile', icon: User },
 ];
