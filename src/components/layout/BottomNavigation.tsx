@@ -16,7 +16,7 @@ const tabs = [
 
 const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationProps) => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-pet-cream px-4 py-2 safe-area-pb">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-pet-background px-4 py-2 safe-area-pb">
       <div className="flex justify-around">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -28,8 +28,8 @@ const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationProps) => 
               onClick={() => onTabChange(tab.id)}
               className={`flex flex-col items-center space-y-1 py-2 px-3 rounded-lg transition-all duration-200 ${
                 isActive 
-                  ? 'text-pet-teal bg-pet-cream' 
-                  : 'text-muted-foreground hover:text-pet-teal hover:bg-pet-cream/50'
+                  ? 'text-pet-primary bg-pet-background' 
+                  : 'text-muted-foreground hover:text-pet-primary hover:bg-pet-background/50'
               }`}
             >
               <Icon className={`h-5 w-5 ${isActive ? 'animate-bounce-gentle' : ''}`} />

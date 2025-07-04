@@ -53,9 +53,9 @@ const CalendarSchedule = ({ tasks, onAddTask, onCompleteTask, onEditTask, onDele
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-pet-burgundy/10 text-pet-burgundy border-pet-burgundy/20';
-      case 'medium': return 'bg-pet-orange/10 text-pet-burgundy border-pet-orange/20';
-      case 'low': return 'bg-pet-teal/10 text-pet-teal border-pet-teal/20';
+      case 'high': return 'bg-destructive/10 text-destructive border-destructive/20';
+      case 'medium': return 'bg-pet-pink/10 text-pet-purple border-pet-pink/20';
+      case 'low': return 'bg-pet-primary/10 text-pet-primary border-pet-primary/20';
       default: return 'bg-muted text-muted-foreground border-muted';
     }
   };
@@ -64,7 +64,7 @@ const CalendarSchedule = ({ tasks, onAddTask, onCompleteTask, onEditTask, onDele
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-foreground">Schedule Calendar</h2>
-        <Button size="sm" className="bg-pet-teal hover:bg-pet-teal/90" onClick={onAddTask}>
+        <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90" onClick={onAddTask}>
           <Plus className="h-4 w-4 mr-1" />
           Add Task
         </Button>
@@ -86,7 +86,7 @@ const CalendarSchedule = ({ tasks, onAddTask, onCompleteTask, onEditTask, onDele
           <h3 className="text-lg font-semibold text-foreground">
             {format(selectedDate, 'MMMM d, yyyy')}
           </h3>
-          <Badge variant="outline" className="bg-pet-cream text-pet-teal">
+          <Badge variant="outline" className="bg-pet-background text-pet-primary">
             {selectedDateTasks.length} tasks
           </Badge>
         </div>
@@ -104,7 +104,7 @@ const CalendarSchedule = ({ tasks, onAddTask, onCompleteTask, onEditTask, onDele
           <div className="space-y-3">
             {selectedDateTasks.map(task => (
               <Card key={task.id} className={`p-4 transition-all duration-200 ${
-                task.completed ? 'opacity-60 bg-pet-cream/30' : 'pet-card-shadow hover:shadow-lg bg-white'
+                task.completed ? 'opacity-60 bg-pet-background/30' : 'pet-card-shadow hover:shadow-lg bg-white'
               }`}>
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-3 flex-1">
@@ -115,7 +115,7 @@ const CalendarSchedule = ({ tasks, onAddTask, onCompleteTask, onEditTask, onDele
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2 mb-1">
                         <h4 className={`font-semibold ${
-                          task.completed ? 'line-through text-muted-foreground' : 'text-pet-teal'
+                          task.completed ? 'line-through text-muted-foreground' : 'text-pet-primary'
                         }`}>
                           {task.title}
                         </h4>
@@ -151,7 +151,7 @@ const CalendarSchedule = ({ tasks, onAddTask, onCompleteTask, onEditTask, onDele
                       <Button
                         size="sm"
                         onClick={() => onCompleteTask(task.id)}
-                        className="bg-pet-teal hover:bg-pet-teal/90 text-white h-8 w-8 p-0"
+                        className="bg-pet-primary hover:bg-pet-primary/90 text-white h-8 w-8 p-0"
                       >
                         ✓
                       </Button>
@@ -160,7 +160,7 @@ const CalendarSchedule = ({ tasks, onAddTask, onCompleteTask, onEditTask, onDele
                       size="sm"
                       variant="ghost"
                       onClick={() => onEditTask(task)}
-                      className="h-8 w-8 p-0 hover:bg-pet-cream"
+                      className="h-8 w-8 p-0 hover:bg-pet-background"
                     >
                       ✏️
                     </Button>
@@ -168,7 +168,7 @@ const CalendarSchedule = ({ tasks, onAddTask, onCompleteTask, onEditTask, onDele
                       size="sm"
                       variant="ghost"
                       onClick={() => onDeleteTask(task.id)}
-                      className="h-8 w-8 p-0 hover:bg-pet-burgundy/10 text-pet-burgundy"
+                      className="h-8 w-8 p-0 hover:bg-destructive/10 text-destructive"
                     >
                       🗑️
                     </Button>

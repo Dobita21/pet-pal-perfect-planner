@@ -40,21 +40,21 @@ const PetCard = ({ pet, onSelect }: PetCardProps) => {
     >
       <div className="flex items-center space-x-4">
         <div className="relative">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-pet-teal/20 to-pet-orange/20 flex items-center justify-center text-2xl">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-pet-primary/20 to-pet-pink/20 flex items-center justify-center text-2xl">
             {getSpeciesEmoji(pet.species)}
           </div>
-          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-pet-teal rounded-full border-2 border-white flex items-center justify-center">
+          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-pet-primary rounded-full border-2 border-white flex items-center justify-center">
             <span className="text-xs text-white">✓</span>
           </div>
         </div>
         
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-lg text-pet-teal truncate">{pet.name}</h3>
+          <h3 className="font-semibold text-lg text-pet-primary truncate">{pet.name}</h3>
           <p className="text-sm text-muted-foreground">{pet.breed} • {pet.age}</p>
           
           {pet.nextTask && (
             <div className="mt-2">
-              <Badge variant="secondary" className="text-xs bg-pet-cream text-pet-teal">
+              <Badge variant="secondary" className="text-xs bg-pet-background text-pet-primary">
                 {pet.nextTask.type} at {pet.nextTask.time}
               </Badge>
             </div>

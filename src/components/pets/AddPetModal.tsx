@@ -66,7 +66,7 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-pet-teal">Add New Pet</DialogTitle>
+          <DialogTitle className="text-pet-primary">Add New Pet</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -135,7 +135,7 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" className="bg-pet-teal hover:bg-pet-teal/90">
+            <Button type="submit" className="bg-pet-primary hover:bg-pet-primary/90">
               Add Pet
             </Button>
           </div>

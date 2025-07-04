@@ -54,12 +54,11 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				'pet-green': 'hsl(var(--pet-green))',
-				'pet-purple': 'hsl(var(--pet-purple))',
 				'pet-yellow': 'hsl(var(--pet-yellow))',
-				'pet-teal': 'hsl(var(--pet-teal))',
-				'pet-cream': 'hsl(var(--pet-cream))',
-				'pet-orange': 'hsl(var(--pet-orange))',
-				'pet-burgundy': 'hsl(var(--pet-burgundy))',
+				'pet-primary': 'hsl(var(--pet-primary))',
+				'pet-background': 'hsl(var(--pet-background))',
+				'pet-pink': 'hsl(var(--pet-pink))',
+				'pet-purple': 'hsl(var(--pet-purple))',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

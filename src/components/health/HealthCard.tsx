@@ -30,17 +30,17 @@ const HealthCard = ({ metric, onClick }: HealthCardProps) => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'good': return 'bg-pet-teal/10 text-pet-teal border-pet-teal/20';
-      case 'warning': return 'bg-pet-orange/10 text-pet-burgundy border-pet-orange/20';
-      case 'critical': return 'bg-pet-burgundy/10 text-pet-burgundy border-pet-burgundy/20';
+      case 'good': return 'bg-pet-primary/10 text-pet-primary border-pet-primary/20';
+      case 'warning': return 'bg-pet-pink/10 text-pet-purple border-pet-pink/20';
+      case 'critical': return 'bg-destructive/10 text-destructive border-destructive/20';
       default: return 'bg-muted text-muted-foreground border-muted';
     }
   };
 
   const getTrendColor = (trend: string) => {
     switch (trend) {
-      case 'up': return 'text-pet-teal';
-      case 'down': return 'text-pet-burgundy';
+      case 'up': return 'text-pet-primary';
+      case 'down': return 'text-destructive';
       default: return 'text-muted-foreground';
     }
   };
@@ -51,7 +51,7 @@ const HealthCard = ({ metric, onClick }: HealthCardProps) => {
       onClick={() => onClick(metric)}
     >
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-medium text-pet-teal">{metric.title}</h3>
+        <h3 className="font-medium text-pet-primary">{metric.title}</h3>
         <Badge variant="outline" className={`text-xs ${getStatusColor(metric.status)}`}>
           {metric.status}
         </Badge>
@@ -60,7 +60,7 @@ const HealthCard = ({ metric, onClick }: HealthCardProps) => {
       <div className="flex items-end justify-between">
         <div>
           <div className="flex items-baseline space-x-1">
-            <span className="text-2xl font-bold text-pet-teal">{metric.value}</span>
+            <span className="text-2xl font-bold text-pet-primary">{metric.value}</span>
             <span className="text-sm text-muted-foreground">{metric.unit}</span>
           </div>
           <p className="text-xs text-muted-foreground mt-1">
