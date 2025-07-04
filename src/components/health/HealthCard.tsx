@@ -30,8 +30,8 @@ const HealthCard = ({ metric, onClick }: HealthCardProps) => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'good': return 'bg-pet-primary/10 text-pet-primary border-pet-primary/20';
-      case 'warning': return 'bg-pet-pink/10 text-pet-purple border-pet-pink/20';
+      case 'good': return 'bg-pet-green/10 text-pet-green border-pet-green/20';
+      case 'warning': return 'bg-pet-orange/10 text-pet-primary border-pet-orange/20';
       case 'critical': return 'bg-destructive/10 text-destructive border-destructive/20';
       default: return 'bg-muted text-muted-foreground border-muted';
     }
@@ -47,12 +47,12 @@ const HealthCard = ({ metric, onClick }: HealthCardProps) => {
 
   return (
     <Card 
-      className="p-4 pet-card-shadow hover:shadow-lg transition-all duration-200 cursor-pointer active:scale-95 bg-white"
+      className="p-4 pet-card-shadow hover:shadow-lg transition-all duration-200 cursor-pointer active:scale-95 bg-white rounded-2xl"
       onClick={() => onClick(metric)}
     >
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-medium text-pet-primary">{metric.title}</h3>
-        <Badge variant="outline" className={`text-xs ${getStatusColor(metric.status)}`}>
+        <Badge variant="outline" className={`text-xs rounded-xl ${getStatusColor(metric.status)}`}>
           {metric.status}
         </Badge>
       </div>

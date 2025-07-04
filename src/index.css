@@ -3,79 +3,79 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Pet Pal Design System - New Pink/Purple Palette */
+/* Pet Pal Design System - Orange/Yellow Palette from attachment */
 
 @layer base {
   :root {
-    --background: 0 12 94; /* Light pink background #FFE1E0 converted to HSL */
-    --foreground: 285 45 35; /* Dark purple text */
+    --background: 45 100 94; /* Light cream/yellow background */
+    --foreground: 25 25 25; /* Dark text */
 
-    --card: 255 255 255; /* Pure white cards */
-    --card-foreground: 285 45 35;
+    --card: 0 0 100; /* Pure white cards */
+    --card-foreground: 25 25 25;
 
-    --popover: 255 255 255;
-    --popover-foreground: 285 45 35;
+    --popover: 0 0 100;
+    --popover-foreground: 25 25 25;
 
-    --primary: 285 45 35; /* Dark Purple #7F55B1 */
-    --primary-foreground: 255 255 255;
+    --primary: 35 100 60; /* Bright Orange #FF8C00 */
+    --primary-foreground: 0 0 100;
 
-    --secondary: 0 12 94; /* Light Pink #FFE1E0 */
-    --secondary-foreground: 285 45 35;
+    --secondary: 45 100 85; /* Light Yellow */
+    --secondary-foreground: 25 25 25;
 
-    --muted: 0 8 88; /* Slightly darker pink */
-    --muted-foreground: 285 25 45;
+    --muted: 45 100 90; /* Very light yellow */
+    --muted-foreground: 25 25 50;
 
-    --accent: 337 70 73; /* Medium Pink #F49BAB */
-    --accent-foreground: 255 255 255;
+    --accent: 30 100 65; /* Orange-red accent */
+    --accent-foreground: 0 0 100;
 
-    --destructive: 14 68 52; /* Keep burgundy for destructive */
-    --destructive-foreground: 255 255 255;
+    --destructive: 0 84 60;
+    --destructive-foreground: 0 0 100;
 
-    --border: 0 8 88;
-    --input: 0 8 88;
-    --ring: 285 45 35;
+    --border: 45 100 85;
+    --input: 45 100 85;
+    --ring: 35 100 60;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    /* Custom pet-themed colors from the new palette */
-    --pet-primary: 285 45 35; /* #7F55B1 Dark Purple */
-    --pet-background: 0 12 94; /* #FFE1E0 Light Pink */
-    --pet-pink: 337 70 73; /* #F49BAB Medium Pink */
-    --pet-purple: 274 39 62; /* #9B7EBD Light Purple */
+    /* Custom pet-themed colors from the orange/yellow palette */
+    --pet-primary: 35 100 60; /* #FF8C00 Bright Orange */
+    --pet-background: 45 100 94; /* Light cream/yellow */
+    --pet-orange: 35 100 60; /* #FF8C00 Bright Orange */
+    --pet-yellow: 50 100 70; /* Sunny Yellow */
+    --pet-cream: 45 100 94; /* Light cream */
     
     /* Keep some colors for variety */
     --pet-green: 142 71 58; /* Healthy green */
-    --pet-yellow: 48 89 61; /* Sunny yellow */
   }
 
   .dark {
-    --background: 285 45 15;
-    --foreground: 0 12 80;
+    --background: 35 50 15;
+    --foreground: 45 100 80;
 
-    --card: 285 35 20;
-    --card-foreground: 0 12 80;
+    --card: 35 40 20;
+    --card-foreground: 45 100 80;
 
-    --popover: 285 35 20;
-    --popover-foreground: 0 12 80;
+    --popover: 35 40 20;
+    --popover-foreground: 45 100 80;
 
-    --primary: 285 45 50;
-    --primary-foreground: 255 255 255;
+    --primary: 35 100 60;
+    --primary-foreground: 0 0 0;
 
-    --secondary: 285 25 25;
-    --secondary-foreground: 0 12 80;
+    --secondary: 35 30 25;
+    --secondary-foreground: 45 100 80;
 
-    --muted: 285 25 25;
-    --muted-foreground: 0 8 60;
+    --muted: 35 30 25;
+    --muted-foreground: 45 80 60;
 
-    --accent: 337 70 73;
-    --accent-foreground: 255 255 255;
+    --accent: 30 100 65;
+    --accent-foreground: 0 0 100;
 
-    --destructive: 14 68 52;
-    --destructive-foreground: 255 255 255;
+    --destructive: 0 84 60;
+    --destructive-foreground: 0 0 100;
 
-    --border: 285 25 25;
-    --input: 285 25 25;
-    --ring: 285 45 50;
+    --border: 35 30 25;
+    --input: 35 30 25;
+    --ring: 35 100 60;
   }
 }
 
@@ -88,13 +88,13 @@
     @apply bg-pet-background text-foreground font-sans;
   }
   
-  /* Custom pet-themed utilities with new colors */
+  /* Custom pet-themed utilities with orange/yellow colors */
   .pet-gradient {
-    background: linear-gradient(135deg, hsl(var(--pet-primary)) 0%, hsl(var(--pet-pink)) 100%);
+    background: linear-gradient(135deg, hsl(var(--pet-primary)) 0%, hsl(var(--pet-yellow)) 100%);
   }
   
   .pet-card-shadow {
-    box-shadow: 0 4px 20px -4px rgba(127, 85, 177, 0.15);
+    box-shadow: 0 4px 20px -4px rgba(255, 140, 0, 0.25);
   }
   
   /* Scrollbar hiding for horizontal scroll */
@@ -105,6 +105,16 @@
   
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+  
+  /* Carousel animations */
+  .carousel-slide {
+    animation: slide 15s infinite linear;
+  }
+  
+  @keyframes slide {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
   }
   
   /* Smooth animations */
