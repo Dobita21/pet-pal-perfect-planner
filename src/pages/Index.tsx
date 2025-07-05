@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import MobileHeader from '@/components/layout/MobileHeader';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -15,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Calendar, Heart, TrendingUp } from 'lucide-react';
 import { Pet } from '@/hooks/usePetData';
 import TaskDetailsModal from '@/components/schedule/TaskDetailsModal';
+import UserPlanSection from '@/components/plans/UserPlanSection';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('schedule');
@@ -73,6 +73,9 @@ const Index = () => {
           <div className="text-sm text-muted-foreground">Pets</div>
         </Card>
       </div>
+
+      {/* User Plan Section */}
+      <UserPlanSection />
 
       {/* Get Your First Pet Section - Show when no pets */}
       {pets.length === 0 && (
