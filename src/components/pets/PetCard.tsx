@@ -35,21 +35,21 @@ const PetCard = ({ pet, onSelect }: PetCardProps) => {
 
   return (
     <Card 
-      className="p-4 pet-card-shadow hover:shadow-lg transition-all duration-200 cursor-pointer active:scale-95 bg-white rounded-3xl"
+      className="p-4 pet-card-shadow hover:shadow-lg transition-all duration-200 cursor-pointer active:scale-95 bg-white rounded-3xl w-72 min-w-72"
       onClick={() => onSelect(pet)}
     >
       <div className="flex items-center space-x-4">
         <div className="relative">
-          <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-pet-primary/20 to-pet-secondary/20 flex items-center justify-center text-2xl">
+          <div className="w-14 h-14 rounded-3xl bg-gradient-to-br from-pet-primary/20 to-pet-secondary/20 flex items-center justify-center text-2xl">
             {getSpeciesEmoji(pet.species)}
           </div>
-          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-pet-primary rounded-full border-2 border-white flex items-center justify-center">
+          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-pet-primary rounded-full border-2 border-white flex items-center justify-center">
             <span className="text-xs text-white">✓</span>
           </div>
         </div>
         
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-lg text-pet-primary truncate">{pet.name}</h3>
+          <h3 className="font-semibold text-base text-pet-primary truncate">{pet.name}</h3>
           <p className="text-sm text-muted-foreground">{pet.breed} • {pet.age}</p>
           
           {pet.nextTask && (

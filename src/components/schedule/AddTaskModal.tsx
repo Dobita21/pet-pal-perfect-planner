@@ -74,30 +74,31 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets }: AddTaskModalProps) =
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-pet-teal">Add New Task</DialogTitle>
+      <DialogContent className="w-[95vw] max-w-md max-h-[90vh] overflow-y-auto rounded-3xl mx-auto p-4">
+        <DialogHeader className="pb-2">
+          <DialogTitle className="text-pet-primary text-lg">Add New Task</DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Task Title</Label>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div className="space-y-1">
+            <Label htmlFor="title" className="text-sm">Task Title</Label>
             <Input
               id="title"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="Enter task title"
+              className="rounded-2xl h-10"
               required
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="type">Task Type</Label>
+          <div className="space-y-1">
+            <Label htmlFor="type" className="text-sm">Task Type</Label>
             <Select value={formData.type} onValueChange={(value: Task['type']) => setFormData({ ...formData, type: value })}>
-              <SelectTrigger>
+              <SelectTrigger className="rounded-2xl h-10">
                 <SelectValue placeholder="Select task type" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="rounded-2xl">
                 <SelectItem value="feeding">🍽️ Feeding</SelectItem>
                 <SelectItem value="walk">🚶 Walk</SelectItem>
                 <SelectItem value="medication">💊 Medication</SelectItem>
@@ -108,13 +109,13 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets }: AddTaskModalProps) =
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="pet">Pet</Label>
+          <div className="space-y-1">
+            <Label htmlFor="pet" className="text-sm">Pet</Label>
             <Select value={formData.petName} onValueChange={(value) => setFormData({ ...formData, petName: value })}>
-              <SelectTrigger>
+              <SelectTrigger className="rounded-2xl h-10">
                 <SelectValue placeholder="Select pet" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="rounded-2xl">
                 {pets.map(pet => (
                   <SelectItem key={pet.id} value={pet.name}>
                     {pet.avatar} {pet.name}
@@ -124,14 +125,14 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets }: AddTaskModalProps) =
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="date">Date</Label>
+          <div className="space-y-1">
+            <Label htmlFor="date" className="text-sm">Date</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   className={cn(
-                    "w-full justify-start text-left font-normal",
+                    "w-full justify-start text-left font-normal rounded-2xl h-10",
                     !formData.date && "text-muted-foreground"
                   )}
                 >
@@ -139,36 +140,37 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets }: AddTaskModalProps) =
                   {formData.date ? format(formData.date, "PPP") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="w-auto p-0 rounded-3xl" align="start">
                 <Calendar
                   mode="single"
                   selected={formData.date}
                   onSelect={(date) => date && setFormData({ ...formData, date })}
                   initialFocus
-                  className="pointer-events-auto"
+                  className="pointer-events-auto rounded-3xl"
                 />
               </PopoverContent>
             </Popover>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="time">Time</Label>
+          <div className="space-y-1">
+            <Label htmlFor="time" className="text-sm">Time</Label>
             <Input
               id="time"
               type="time"
               value={formData.time}
               onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+              className="rounded-2xl h-10"
               required
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="priority">Priority</Label>
+          <div className="space-y-1">
+            <Label htmlFor="priority" className="text-sm">Priority</Label>
             <Select value={formData.priority} onValueChange={(value: Task['priority']) => setFormData({ ...formData, priority: value })}>
-              <SelectTrigger>
+              <SelectTrigger className="rounded-2xl h-10">
                 <SelectValue placeholder="Select priority" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="rounded-2xl">
                 <SelectItem value="high">🔴 High</SelectItem>
                 <SelectItem value="medium">🟡 Medium</SelectItem>
                 <SelectItem value="low">🟢 Low</SelectItem>
@@ -176,22 +178,23 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets }: AddTaskModalProps) =
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+          <div className="space-y-1">
+            <Label htmlFor="description" className="text-sm">Description</Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Enter task description..."
-              rows={3}
+              rows={2}
+              className="rounded-2xl"
             />
           </div>
 
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
+          <div className="flex justify-end space-x-2 pt-3">
+            <Button type="button" variant="outline" onClick={onClose} className="rounded-2xl h-10">
               Cancel
             </Button>
-            <Button type="submit" className="bg-pet-teal hover:bg-pet-teal/90">
+            <Button type="submit" className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl h-10">
               Add Task
             </Button>
           </div>

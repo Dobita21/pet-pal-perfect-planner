@@ -92,12 +92,11 @@ const Index = () => {
           
           <div className="flex overflow-x-auto pb-4 space-x-4 scrollbar-hide">
             {pets.map(pet => (
-              <div key={pet.id} className="min-w-[280px] flex-shrink-0">
-                <PetCard
-                  pet={pet}
-                  onSelect={handlePetSelect}
-                />
-              </div>
+              <PetCard
+                key={pet.id}
+                pet={pet}
+                onSelect={handlePetSelect}
+              />
             ))}
           </div>
         </div>
@@ -120,26 +119,39 @@ const Index = () => {
               <p className="text-muted-foreground">No tasks for today</p>
             </Card>
           ) : (
-            // Show only first task, make it clickable
-            <div 
-              className="cursor-pointer"
-              onClick={() => handleTaskClick(todaysTasks[0])}
-            >
-              <TaskCard
-                key={todaysTasks[0].id}
-                task={todaysTasks[0]}
-                onComplete={completeTask}
-                onRemind={setReminder}
-              />
-            </div>
-          )}
-          
-          {todaysTasks.length > 1 && (
-            <Card className="p-4 text-center rounded-3xl bg-pet-surface/30">
-              <p className="text-sm text-muted-foreground">
-                +{todaysTasks.length - 1} more tasks today
-              </p>
-            </Card>
+            <>
+              {/* Show first task with click handler */}
+              <div 
+                className="cursor-pointer"
+                onClick={() => handleTaskClick(todaysTasks[0])}
+              >
+                <TaskCard
+                  key={todaysTasks[0].id}
+                  task={todaysTasks[0]}
+                  onComplete={completeTask}
+                  onRemind={setReminder}
+                />
+              </div>
+              
+              {/* Show remaining tasks with click handlers */}
+              {todaysTasks.length > 1 && (
+                <div className="space-y-3">
+                  {todaysTasks.slice(1).map(task => (
+                    <div 
+                      key={task.id}
+                      className="cursor-pointer"
+                      onClick={() => handleTaskClick(task)}
+                    >
+                      <TaskCard
+                        task={task}
+                        onComplete={completeTask}
+                        onRemind={setReminder}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -373,6 +385,16 @@ const Index = () => {
         </div>
       );
       default: return renderScheduleTab();
+    }
+  };
+
+  const getPageTitle = () => {
+    switch (activeTab) {
+      case 'schedule': return 'Pet Pal';
+      case 'health': return 'Schedule';
+      case 'tasks': return 'Tasks';
+      case 'profile': return 'Profile';
+      default: return 'Pet Pal';
     }
   };
 
