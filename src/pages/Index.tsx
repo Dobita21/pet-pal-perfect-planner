@@ -3,7 +3,6 @@ import MobileHeader from '@/components/layout/MobileHeader';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import PetCard from '@/components/pets/PetCard';
 import TaskCard from '@/components/schedule/TaskCard';
-import HealthCard from '@/components/health/HealthCard';
 import CalendarSchedule from '@/components/schedule/CalendarSchedule';
 import AddPetModal from '@/components/pets/AddPetModal';
 import AddTaskModal from '@/components/schedule/AddTaskModal';
@@ -14,6 +13,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Calendar, Heart, TrendingUp } from 'lucide-react';
 import { Pet } from '@/hooks/usePetData';
+import TaskDetailsModal from '@/components/schedule/TaskDetailsModal';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('schedule');
@@ -21,6 +21,8 @@ const Index = () => {
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
   const [showPetDetails, setShowPetDetails] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [showTaskDetails, setShowTaskDetails] = useState(false);
   const { pets, tasks, healthMetrics, completeTask, setReminder, addPet, addTask } = usePetData();
 
   const todaysTasks = tasks.filter(task => !task.completed);
@@ -29,6 +31,11 @@ const Index = () => {
   const handlePetSelect = (pet: Pet) => {
     setSelectedPet(pet);
     setShowPetDetails(true);
+  };
+
+  const handleTaskClick = (task: any) => {
+    setSelectedTask(task);
+    setShowTaskDetails(true);
   };
 
   const getPetTasks = (petName: string) => {
@@ -42,23 +49,23 @@ const Index = () => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <Card className="p-4 text-center rounded-2xl pet-card-shadow">
+        <Card className="p-4 text-center rounded-3xl pet-card-shadow">
           <div className="text-2xl font-bold text-pet-primary">{todaysTasks.length}</div>
           <div className="text-sm text-muted-foreground">Pending</div>
         </Card>
-        <Card className="p-4 text-center rounded-2xl pet-card-shadow">
+        <Card className="p-4 text-center rounded-3xl pet-card-shadow">
           <div className="text-2xl font-bold text-pet-green">{completedTasks.length}</div>
           <div className="text-sm text-muted-foreground">Completed</div>
         </Card>
-        <Card className="p-4 text-center rounded-2xl pet-card-shadow">
-          <div className="text-2xl font-bold text-accent">{pets.length}</div>
+        <Card className="p-4 text-center rounded-3xl pet-card-shadow">
+          <div className="text-2xl font-bold text-pet-secondary">{pets.length}</div>
           <div className="text-sm text-muted-foreground">Pets</div>
         </Card>
       </div>
 
       {/* Get Your First Pet Section - Show when no pets */}
       {pets.length === 0 && (
-        <Card className="p-6 text-center rounded-2xl pet-card-shadow bg-gradient-to-br from-pet-primary/10 to-pet-yellow/10">
+        <Card className="p-6 text-center rounded-3xl pet-card-shadow bg-gradient-to-br from-pet-primary/10 to-pet-secondary/10">
           <div className="text-6xl mb-4">🐕</div>
           <h2 className="text-xl font-bold text-pet-primary mb-2">Get Your First Pet!</h2>
           <p className="text-muted-foreground mb-4">Start your journey by adding your beloved companion</p>
@@ -72,41 +79,12 @@ const Index = () => {
         </Card>
       )}
 
-      {/* Today's Tasks */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-foreground">Today's Tasks</h2>
-          <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-xl" onClick={() => setShowAddTaskModal(true)}>
-            <Plus className="h-4 w-4 mr-1" />
-            Add
-          </Button>
-        </div>
-        
-        <div className="space-y-3">
-          {todaysTasks.length === 0 ? (
-            <Card className="p-6 text-center rounded-2xl">
-              <div className="text-4xl mb-2">📋</div>
-              <p className="text-muted-foreground">No tasks for today</p>
-            </Card>
-          ) : (
-            todaysTasks.map(task => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onComplete={completeTask}
-                onRemind={setReminder}
-              />
-            ))
-          )}
-        </div>
-      </div>
-
       {/* My Pets - Horizontal Scroll */}
       {pets.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-foreground">My Pets</h2>
-            <Button size="sm" variant="outline" onClick={() => setShowAddPetModal(true)} className="rounded-xl">
+            <Button size="sm" variant="outline" onClick={() => setShowAddPetModal(true)} className="rounded-2xl border-pet-primary text-pet-primary hover:bg-pet-primary/10">
               <Plus className="h-4 w-4 mr-1" />
               Add Pet
             </Button>
@@ -125,28 +103,46 @@ const Index = () => {
         </div>
       )}
 
-      {/* Health Overview - Only show if pets exist */}
-      {pets.length > 0 && (
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-foreground">Health Overview</h2>
-            <Button size="sm" className="bg-pet-green hover:bg-pet-green/90 rounded-xl">
-              <Plus className="h-4 w-4 mr-1" />
-              Log Data
-            </Button>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            {healthMetrics.slice(0, 4).map(metric => (
-              <HealthCard
-                key={metric.id}
-                metric={metric}
-                onClick={(metric) => console.log('Selected metric:', metric.title)}
-              />
-            ))}
-          </div>
+      {/* Today's Tasks */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-foreground">Today's Tasks</h2>
+          <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl" onClick={() => setShowAddTaskModal(true)}>
+            <Plus className="h-4 w-4 mr-1" />
+            Add
+          </Button>
         </div>
-      )}
+        
+        <div className="space-y-3">
+          {todaysTasks.length === 0 ? (
+            <Card className="p-6 text-center rounded-3xl">
+              <div className="text-4xl mb-2">📋</div>
+              <p className="text-muted-foreground">No tasks for today</p>
+            </Card>
+          ) : (
+            // Show only first task, make it clickable
+            <div 
+              className="cursor-pointer"
+              onClick={() => handleTaskClick(todaysTasks[0])}
+            >
+              <TaskCard
+                key={todaysTasks[0].id}
+                task={todaysTasks[0]}
+                onComplete={completeTask}
+                onRemind={setReminder}
+              />
+            </div>
+          )}
+          
+          {todaysTasks.length > 1 && (
+            <Card className="p-4 text-center rounded-3xl bg-pet-surface/30">
+              <p className="text-sm text-muted-foreground">
+                +{todaysTasks.length - 1} more tasks today
+              </p>
+            </Card>
+          )}
+        </div>
+      </div>
     </div>
   );
 
@@ -164,7 +160,7 @@ const Index = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-foreground">All Tasks</h2>
-        <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-xl" onClick={() => setShowAddTaskModal(true)}>
+        <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl" onClick={() => setShowAddTaskModal(true)}>
           <Plus className="h-4 w-4 mr-1" />
           New Task
         </Button>
@@ -175,12 +171,17 @@ const Index = () => {
           <h3 className="text-lg font-semibold text-foreground mb-3">Pending Tasks</h3>
           <div className="space-y-3">
             {todaysTasks.map(task => (
-              <TaskCard
+              <div 
                 key={task.id}
-                task={task}
-                onComplete={completeTask}
-                onRemind={setReminder}
-              />
+                className="cursor-pointer"
+                onClick={() => handleTaskClick(task)}
+              >
+                <TaskCard
+                  task={task}
+                  onComplete={completeTask}
+                  onRemind={setReminder}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -189,12 +190,17 @@ const Index = () => {
           <h3 className="text-lg font-semibold text-foreground mb-3">Completed Today</h3>
           <div className="space-y-3">
             {completedTasks.map(task => (
-              <TaskCard
+              <div 
                 key={task.id}
-                task={task}
-                onComplete={completeTask}
-                onRemind={setReminder}
-              />
+                className="cursor-pointer"
+                onClick={() => handleTaskClick(task)}
+              >
+                <TaskCard
+                  task={task}
+                  onComplete={completeTask}
+                  onRemind={setReminder}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -213,7 +219,7 @@ const Index = () => {
       </div>
 
       <div className="space-y-3">
-        <Card className="p-4 rounded-2xl">
+        <Card className="p-4 rounded-3xl">
           <h3 className="font-semibold mb-2">Account Settings</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
@@ -227,7 +233,7 @@ const Index = () => {
           </div>
         </Card>
 
-        <Card className="p-4 rounded-2xl">
+        <Card className="p-4 rounded-3xl">
           <h3 className="font-semibold mb-2">App Statistics</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
@@ -274,7 +280,7 @@ const Index = () => {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-foreground">All Tasks</h2>
-            <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-xl" onClick={() => setShowAddTaskModal(true)}>
+            <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl" onClick={() => setShowAddTaskModal(true)}>
               <Plus className="h-4 w-4 mr-1" />
               New Task
             </Button>
@@ -285,12 +291,17 @@ const Index = () => {
               <h3 className="text-lg font-semibold text-foreground mb-3">Pending Tasks</h3>
               <div className="space-y-3">
                 {todaysTasks.map(task => (
-                  <TaskCard
+                  <div 
                     key={task.id}
-                    task={task}
-                    onComplete={completeTask}
-                    onRemind={setReminder}
-                  />
+                    className="cursor-pointer"
+                    onClick={() => handleTaskClick(task)}
+                  >
+                    <TaskCard
+                      task={task}
+                      onComplete={completeTask}
+                      onRemind={setReminder}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
@@ -299,12 +310,17 @@ const Index = () => {
               <h3 className="text-lg font-semibold text-foreground mb-3">Completed Today</h3>
               <div className="space-y-3">
                 {completedTasks.map(task => (
-                  <TaskCard
+                  <div 
                     key={task.id}
-                    task={task}
-                    onComplete={completeTask}
-                    onRemind={setReminder}
-                  />
+                    className="cursor-pointer"
+                    onClick={() => handleTaskClick(task)}
+                  >
+                    <TaskCard
+                      task={task}
+                      onComplete={completeTask}
+                      onRemind={setReminder}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
@@ -322,7 +338,7 @@ const Index = () => {
           </div>
 
           <div className="space-y-3">
-            <Card className="p-4 rounded-2xl">
+            <Card className="p-4 rounded-3xl">
               <h3 className="font-semibold mb-2">Account Settings</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
@@ -336,7 +352,7 @@ const Index = () => {
               </div>
             </Card>
 
-            <Card className="p-4 rounded-2xl">
+            <Card className="p-4 rounded-3xl">
               <h3 className="font-semibold mb-2">App Statistics</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
@@ -389,6 +405,14 @@ const Index = () => {
         onClose={() => setShowPetDetails(false)}
         healthMetrics={healthMetrics}
         petTasks={selectedPet ? getPetTasks(selectedPet.name) : []}
+      />
+
+      <TaskDetailsModal
+        task={selectedTask}
+        isOpen={showTaskDetails}
+        onClose={() => setShowTaskDetails(false)}
+        onComplete={completeTask}
+        onRemind={setReminder}
       />
     </div>
   );

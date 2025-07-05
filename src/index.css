@@ -3,79 +3,81 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Pet Pal Design System - Orange/Yellow Palette from attachment */
+/* Pet Pal Design System - Orange/Blue Modern Theme from attachment */
 
 @layer base {
   :root {
-    --background: 45 100 94; /* Light cream/yellow background */
-    --foreground: 25 25 25; /* Dark text */
+    --background: 0 0 100; /* Pure white background */
+    --foreground: 220 15 25; /* Dark gray text */
 
     --card: 0 0 100; /* Pure white cards */
-    --card-foreground: 25 25 25;
+    --card-foreground: 220 15 25;
 
     --popover: 0 0 100;
-    --popover-foreground: 25 25 25;
+    --popover-foreground: 220 15 25;
 
-    --primary: 35 100 60; /* Bright Orange #FF8C00 */
+    --primary: 22 92 52; /* Orange #FF6B35 */
     --primary-foreground: 0 0 100;
 
-    --secondary: 45 100 85; /* Light Yellow */
-    --secondary-foreground: 25 25 25;
+    --secondary: 213 94 68; /* Blue #3B82F6 */
+    --secondary-foreground: 0 0 100;
 
-    --muted: 45 100 90; /* Very light yellow */
-    --muted-foreground: 25 25 50;
+    --muted: 220 14 96; /* Very light gray */
+    --muted-foreground: 220 9 46;
 
-    --accent: 30 100 65; /* Orange-red accent */
+    --accent: 22 92 52; /* Orange accent */
     --accent-foreground: 0 0 100;
 
     --destructive: 0 84 60;
     --destructive-foreground: 0 0 100;
 
-    --border: 45 100 85;
-    --input: 45 100 85;
-    --ring: 35 100 60;
+    --border: 220 13 91;
+    --input: 220 13 91;
+    --ring: 22 92 52;
 
     --radius: 1rem;
 
-    /* Custom pet-themed colors from the orange/yellow palette */
-    --pet-primary: 35 100 60; /* #FF8C00 Bright Orange */
-    --pet-background: 45 100 94; /* Light cream/yellow */
-    --pet-orange: 35 100 60; /* #FF8C00 Bright Orange */
-    --pet-yellow: 50 100 70; /* Sunny Yellow */
-    --pet-cream: 45 100 94; /* Light cream */
+    /* Custom pet-themed colors from attachment */
+    --pet-primary: 22 92 52; /* Orange #FF6B35 */
+    --pet-secondary: 213 94 68; /* Blue #3B82F6 */
+    --pet-background: 0 0 100; /* White */
+    --pet-surface: 220 14 96; /* Light gray surface */
+    --pet-orange: 22 92 52; /* Main orange */
+    --pet-blue: 213 94 68; /* Main blue */
+    --pet-gray: 220 9 46; /* Text gray */
     
     /* Keep some colors for variety */
     --pet-green: 142 71 58; /* Healthy green */
   }
 
   .dark {
-    --background: 35 50 15;
-    --foreground: 45 100 80;
+    --background: 220 15 15;
+    --foreground: 220 14 96;
 
-    --card: 35 40 20;
-    --card-foreground: 45 100 80;
+    --card: 220 15 20;
+    --card-foreground: 220 14 96;
 
-    --popover: 35 40 20;
-    --popover-foreground: 45 100 80;
+    --popover: 220 15 20;
+    --popover-foreground: 220 14 96;
 
-    --primary: 35 100 60;
+    --primary: 22 92 52;
     --primary-foreground: 0 0 0;
 
-    --secondary: 35 30 25;
-    --secondary-foreground: 45 100 80;
+    --secondary: 213 94 68;
+    --secondary-foreground: 0 0 100;
 
-    --muted: 35 30 25;
-    --muted-foreground: 45 80 60;
+    --muted: 220 15 25;
+    --muted-foreground: 220 9 60;
 
-    --accent: 30 100 65;
+    --accent: 22 92 52;
     --accent-foreground: 0 0 100;
 
     --destructive: 0 84 60;
     --destructive-foreground: 0 0 100;
 
-    --border: 35 30 25;
-    --input: 35 30 25;
-    --ring: 35 100 60;
+    --border: 220 15 25;
+    --input: 220 15 25;
+    --ring: 22 92 52;
   }
 }
 
@@ -85,16 +87,16 @@
   }
   
   body {
-    @apply bg-pet-background text-foreground font-sans;
+    @apply bg-background text-foreground font-sans;
   }
   
-  /* Custom pet-themed utilities with orange/yellow colors */
+  /* Custom pet-themed utilities with modern orange/blue colors */
   .pet-gradient {
-    background: linear-gradient(135deg, hsl(var(--pet-primary)) 0%, hsl(var(--pet-yellow)) 100%);
+    background: linear-gradient(135deg, hsl(var(--pet-primary)) 0%, hsl(var(--pet-secondary)) 100%);
   }
   
   .pet-card-shadow {
-    box-shadow: 0 4px 20px -4px rgba(255, 140, 0, 0.25);
+    box-shadow: 0 4px 20px -4px rgba(255, 107, 53, 0.15);
   }
   
   /* Scrollbar hiding for horizontal scroll */
@@ -109,7 +111,7 @@
   
   /* Carousel animations */
   .carousel-slide {
-    animation: slide 15s infinite linear;
+    animation: slide 20s infinite linear;
   }
   
   @keyframes slide {
