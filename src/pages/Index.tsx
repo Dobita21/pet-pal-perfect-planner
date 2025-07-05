@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import MobileHeader from '@/components/layout/MobileHeader';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -42,6 +43,16 @@ const Index = () => {
     return tasks.filter(task => task.petName === petName);
   };
 
+  const getPageTitle = () => {
+    switch (activeTab) {
+      case 'schedule': return 'Pet Pal';
+      case 'health': return 'Schedule';
+      case 'tasks': return 'Tasks';
+      case 'profile': return 'Profile';
+      default: return 'Pet Pal';
+    }
+  };
+
   const renderScheduleTab = () => (
     <div className="space-y-6">
       {/* Infinity Carousel Banner */}
@@ -71,7 +82,7 @@ const Index = () => {
           <p className="text-muted-foreground mb-4">Start your journey by adding your beloved companion</p>
           <Button 
             onClick={() => setShowAddPetModal(true)}
-            className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl px-8"
+            className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl px-8"
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Your Pet
@@ -84,7 +95,7 @@ const Index = () => {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-foreground">My Pets</h2>
-            <Button size="sm" variant="outline" onClick={() => setShowAddPetModal(true)} className="rounded-2xl border-pet-primary text-pet-primary hover:bg-pet-primary/10">
+            <Button size="sm" variant="outline" onClick={() => setShowAddPetModal(true)} className="rounded-3xl border-pet-primary text-pet-primary hover:bg-pet-primary/10">
               <Plus className="h-4 w-4 mr-1" />
               Add Pet
             </Button>
@@ -102,11 +113,11 @@ const Index = () => {
         </div>
       )}
 
-      {/* Today's Tasks */}
+      {/* Today's Tasks - Show only first task */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-foreground">Today's Tasks</h2>
-          <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl" onClick={() => setShowAddTaskModal(true)}>
+          <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl" onClick={() => setShowAddTaskModal(true)}>
             <Plus className="h-4 w-4 mr-1" />
             Add
           </Button>
@@ -119,162 +130,22 @@ const Index = () => {
               <p className="text-muted-foreground">No tasks for today</p>
             </Card>
           ) : (
-            <>
-              {/* Show first task with click handler */}
-              <div 
-                className="cursor-pointer"
-                onClick={() => handleTaskClick(todaysTasks[0])}
-              >
-                <TaskCard
-                  key={todaysTasks[0].id}
-                  task={todaysTasks[0]}
-                  onComplete={completeTask}
-                  onRemind={setReminder}
-                />
-              </div>
-              
-              {/* Show remaining tasks with click handlers */}
-              {todaysTasks.length > 1 && (
-                <div className="space-y-3">
-                  {todaysTasks.slice(1).map(task => (
-                    <div 
-                      key={task.id}
-                      className="cursor-pointer"
-                      onClick={() => handleTaskClick(task)}
-                    >
-                      <TaskCard
-                        task={task}
-                        onComplete={completeTask}
-                        onRemind={setReminder}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </>
+            <div 
+              className="cursor-pointer"
+              onClick={() => handleTaskClick(todaysTasks[0])}
+            >
+              <TaskCard
+                key={todaysTasks[0].id}
+                task={todaysTasks[0]}
+                onComplete={completeTask}
+                onRemind={setReminder}
+              />
+            </div>
           )}
         </div>
       </div>
     </div>
   );
-
-  const renderHealthTab = () => (
-    <CalendarSchedule 
-      tasks={tasks}
-      onAddTask={() => setShowAddTaskModal(true)}
-      onCompleteTask={completeTask}
-      onEditTask={(task) => console.log('Edit task:', task)}
-      onDeleteTask={(taskId) => console.log('Delete task:', taskId)}
-    />
-  );
-
-  const renderTasksTab = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-foreground">All Tasks</h2>
-        <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl" onClick={() => setShowAddTaskModal(true)}>
-          <Plus className="h-4 w-4 mr-1" />
-          New Task
-        </Button>
-      </div>
-      
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-semibold text-foreground mb-3">Pending Tasks</h3>
-          <div className="space-y-3">
-            {todaysTasks.map(task => (
-              <div 
-                key={task.id}
-                className="cursor-pointer"
-                onClick={() => handleTaskClick(task)}
-              >
-                <TaskCard
-                  task={task}
-                  onComplete={completeTask}
-                  onRemind={setReminder}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-        
-        <div>
-          <h3 className="text-lg font-semibold text-foreground mb-3">Completed Today</h3>
-          <div className="space-y-3">
-            {completedTasks.map(task => (
-              <div 
-                key={task.id}
-                className="cursor-pointer"
-                onClick={() => handleTaskClick(task)}
-              >
-                <TaskCard
-                  task={task}
-                  onComplete={completeTask}
-                  onRemind={setReminder}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderProfileTab = () => (
-    <div className="space-y-6">
-      <div className="text-center">
-        <div className="w-24 h-24 rounded-full pet-gradient mx-auto mb-4 flex items-center justify-center text-3xl">
-          👤
-        </div>
-        <h2 className="text-xl font-bold text-foreground">Pet Parent Profile</h2>
-        <p className="text-muted-foreground">Managing {pets.length} beloved pets</p>
-      </div>
-
-      <div className="space-y-3">
-        <Card className="p-4 rounded-3xl">
-          <h3 className="font-semibold mb-2">Account Settings</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span>Notifications</span>
-              <span className="text-pet-green">Enabled</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Data Sync</span>
-              <span className="text-pet-green">Active</span>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4 rounded-3xl">
-          <h3 className="font-semibold mb-2">App Statistics</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span>Tasks Completed</span>
-              <span className="font-medium">{completedTasks.length}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Days Active</span>
-              <span className="font-medium">47</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Health Records</span>
-              <span className="font-medium">{healthMetrics.length}</span>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </div>
-  );
-
-  const getPageTitle = () => {
-    switch (activeTab) {
-      case 'schedule': return 'Pet Pal';
-      case 'health': return 'Schedule';
-      case 'tasks': return 'Tasks';
-      case 'profile': return 'Profile';
-      default: return 'Pet Pal';
-    }
-  };
 
   const renderActiveTab = () => {
     switch (activeTab) {
@@ -292,7 +163,7 @@ const Index = () => {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-foreground">All Tasks</h2>
-            <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl" onClick={() => setShowAddTaskModal(true)}>
+            <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl" onClick={() => setShowAddTaskModal(true)}>
               <Plus className="h-4 w-4 mr-1" />
               New Task
             </Button>
@@ -385,16 +256,6 @@ const Index = () => {
         </div>
       );
       default: return renderScheduleTab();
-    }
-  };
-
-  const getPageTitle = () => {
-    switch (activeTab) {
-      case 'schedule': return 'Pet Pal';
-      case 'health': return 'Schedule';
-      case 'tasks': return 'Tasks';
-      case 'profile': return 'Profile';
-      default: return 'Pet Pal';
     }
   };
 
