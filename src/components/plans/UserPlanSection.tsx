@@ -7,12 +7,23 @@ import { Check, Star, Crown } from 'lucide-react';
 const UserPlanSection = () => {
   const plans = [
     {
+      id: 'free',
+      name: 'Free',
+      price: '0',
+      currency: 'THB',
+      icon: '🐾',
+      features: ['Up to 2 pets', 'Basic task tracking', 'Health reminders'],
+      isPopular: false,
+      buttonText: 'Current Plan',
+      buttonVariant: 'outline' as const
+    },
+    {
       id: 'pro',
       name: 'Pro',
       price: '49',
       currency: 'THB',
       icon: '⭐',
-      features: ['Up to 10 pets', 'Advanced analytics', 'Vet appointments', 'Photo uploads', 'Sync to Google Calendar'],
+      features: ['Up to 10 pets', 'Advanced analytics', 'Vet appointments', 'Photo uploads'],
       isPopular: true,
       buttonText: 'Upgrade',
       buttonVariant: 'default' as const
@@ -23,26 +34,19 @@ const UserPlanSection = () => {
       price: '99',
       currency: 'THB',
       icon: '👑',
-      features: ['Unlimited pets', 'AI health insights', 'Priority support', 'Custom reminders', 'Sync to Google Calendar'],
+      features: ['Unlimited pets', 'AI health insights', 'Priority support', 'Custom reminders'],
       isPopular: false,
       buttonText: 'Upgrade',
       buttonVariant: 'default' as const
-    },
-    {
-      id: 'free',
-      name: 'Free',
-      price: '0',
-      currency: 'THB',
-      icon: '🐾',
-      features: ['Up to 2 pets', 'Basic task tracking', 'Health reminders'],
-      isPopular: false,
-      buttonText: 'Current Plan',
-      buttonVariant: 'outline' as const
     }
   ];
 
   return (
-    <div className="space-y-4">      
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-foreground">Choose Your Plan</h2>
+      </div>
+      
       <div className="flex overflow-x-auto pb-4 space-x-4 scrollbar-hide">
         {plans.map((plan) => (
           <Card 
@@ -90,10 +94,6 @@ const UserPlanSection = () => {
             </Button>
           </Card>
         ))}
-      </div>
-
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-foreground">Choose Your Plan</h2>
       </div>
     </div>
   );

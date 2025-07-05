@@ -4,7 +4,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Clock, MapPin, Stethoscope, Calendar as CalendarIcon } from 'lucide-react';
+import { Plus, Clock, MapPin, Stethoscope } from 'lucide-react';
 import { format, isSameDay } from 'date-fns';
 
 interface Task {
@@ -60,33 +60,14 @@ const CalendarSchedule = ({ tasks, onAddTask, onCompleteTask, onEditTask, onDele
     }
   };
 
-  const hasTasksOnDate = (date: Date) => {
-    return getTasksForDate(date).length > 0;
-  };
-
-  const handleSyncGoogleCalendar = () => {
-    // TODO: Implement Google Calendar sync
-    console.log('Sync with Google Calendar clicked');
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-foreground">Schedule Calendar</h2>
-        <div className="flex items-center space-x-2">
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="bg-white hover:bg-pet-primary/10 border-pet-primary text-pet-primary rounded-3xl"
-            onClick={handleSyncGoogleCalendar}
-          >
-            <CalendarIcon className="h-4 w-4 mr-1" />
-            Sync with Google Calendar
-          </Button>
-          <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl" onClick={onAddTask}>
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
+        <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90" onClick={onAddTask}>
+          <Plus className="h-4 w-4 mr-1" />
+          Add Task
+        </Button>
       </div>
 
       {/* Calendar */}
@@ -96,19 +77,6 @@ const CalendarSchedule = ({ tasks, onAddTask, onCompleteTask, onEditTask, onDele
           selected={selectedDate}
           onSelect={(date) => date && setSelectedDate(date)}
           className="rounded-md border-0"
-          components={{
-            Day: ({ date, ...props }) => {
-              const hasTasks = hasTasksOnDate(date);
-              return (
-                <div className="relative">
-                  <button {...props} />
-                  {hasTasks && (
-                    <div className="absolute top-1 right-1 w-2 h-2 bg-pet-primary rounded-full"></div>
-                  )}
-                </div>
-              );
-            }
-          }}
         />
       </Card>
 
