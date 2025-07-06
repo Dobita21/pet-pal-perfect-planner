@@ -7,10 +7,9 @@ interface MobileHeaderProps {
   title: string;
   showNotifications?: boolean;
   showProfile?: boolean;
-  onProfileClick?: () => void;
 }
 
-const MobileHeader = ({ title, showNotifications = true, showProfile = true, onProfileClick }: MobileHeaderProps) => {
+const MobileHeader = ({ title, showNotifications = true, showProfile = true }: MobileHeaderProps) => {
   return (
     <header className="bg-white border-b border-border px-4 py-3 flex items-center justify-between shadow-sm rounded-b-2xl">
       <div className="flex items-center space-x-3">
@@ -28,12 +27,7 @@ const MobileHeader = ({ title, showNotifications = true, showProfile = true, onP
           </Button>
         )}
         {showProfile && (
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="hover:bg-pet-background rounded-2xl"
-            onClick={onProfileClick}
-          >
+          <Button variant="ghost" size="sm" className="hover:bg-pet-background rounded-2xl">
             <User className="h-5 w-5 text-pet-primary" />
           </Button>
         )}

@@ -49,56 +49,10 @@ const Index = () => {
       case 'schedule': return 'Pet Pal';
       case 'health': return 'Schedule';
       case 'tasks': return 'Tasks';
-      case 'mypets': return 'My Pets';
       case 'profile': return 'Profile';
       default: return 'Pet Pal';
     }
   };
-
-  const handleProfileClick = () => {
-    setActiveTab('profile');
-  };
-
-  const renderMyPetsTab = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-foreground">My Pets</h2>
-        <Button 
-          size="sm" 
-          className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl" 
-          onClick={() => setShowAddPetModal(true)}
-        >
-          <Plus className="h-4 w-4 mr-1" />
-          Add Pet
-        </Button>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        {pets.map(pet => (
-          <PetCard
-            key={pet.id}
-            pet={pet}
-            onSelect={handlePetSelect}
-          />
-        ))}
-      </div>
-      
-      {pets.length === 0 && (
-        <Card className="p-8 text-center rounded-3xl pet-card-shadow bg-gradient-to-br from-pet-primary/10 to-pet-secondary/10">
-          <div className="text-6xl mb-4">🐕</div>
-          <h2 className="text-xl font-bold text-pet-primary mb-2">No Pets Yet!</h2>
-          <p className="text-muted-foreground mb-4">Add your first pet to get started</p>
-          <Button 
-            onClick={() => setShowAddPetModal(true)}
-            className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl px-8"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Your First Pet
-          </Button>
-        </Card>
-      )}
-    </div>
-  );
 
   const renderScheduleTab = () => (
     <div className="space-y-6">
@@ -189,9 +143,6 @@ const Index = () => {
           )}
         </div>
       </div>
-
-      {/* User Plan Section */}
-      <UserPlanSection />
     </div>
   );
 
@@ -214,6 +165,7 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-foreground">All Tasks</h2>
             <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl" onClick={() => setShowAddTaskModal(true)}>
+              {/* <Plus className="h-4 w-4 mr-1" /> */}
               + New Task
             </Button>
           </div>
@@ -277,7 +229,6 @@ const Index = () => {
           </div>
         </div>
       );
-      case 'mypets': return renderMyPetsTab();
       case 'profile': return (
         <div className="space-y-6">
           <div className="text-center">
@@ -329,10 +280,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MobileHeader 
-        title={getPageTitle()} 
-        onProfileClick={handleProfileClick}
-      />
+      <MobileHeader title={getPageTitle()} />
       
       <main className="px-4 py-6 pb-24 animate-fade-in">
         {renderActiveTab()}

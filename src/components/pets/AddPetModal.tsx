@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Upload, X } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar'; // Make sure you have a Calendar component
+import { format } from 'date-fns'; // For formatting the date
 
 interface Pet {
   id: string;
@@ -32,7 +33,7 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
     name: '',
     species: '',
     breed: '',
-    age: '',
+    age: '', // will store ISO string or formatted date
     notes: ''
   });
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -53,20 +54,10 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
   const daysInMonth = getDaysInMonth(birthYear, birthMonth);
   const days = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`.padStart(2, '0'));
 
-  // Calculate age when dropdowns change
+  // Update formData.age when dropdowns change
   React.useEffect(() => {
     if (birthYear && birthMonth && birthDay) {
-      const birthDate = new Date(Number(birthYear), Number(birthMonth) - 1, Number(birthDay));
-      const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-      
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-      
-      const ageString = age === 1 ? '1 year' : `${age} years`;
-      setFormData({ ...formData, age: ageString });
+      setFormData({ ...formData, age: `${birthYear}-${birthMonth}-${birthDay}` });
     }
   }, [birthYear, birthMonth, birthDay]);
 
@@ -84,9 +75,6 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
     onAddPet(newPet);
     setFormData({ name: '', species: '', breed: '', age: '', notes: '' });
     setUploadedImage(null);
-    setBirthYear('');
-    setBirthMonth('');
-    setBirthDay('');
     onClose();
   };
 
@@ -118,7 +106,7 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md max-w-[75vw] w-[75%] max-h-[85vh] overflow-y-auto rounded-3xl">
+      <DialogContent className="sm:max-w-md max-w-[95vw] w-[95%] max-h-[95vh] overflow-y-auto rounded-3xl">
         <DialogHeader>
           <DialogTitle className="text-pet-primary">Add New Pet</DialogTitle>
         </DialogHeader>
@@ -132,21 +120,21 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
                   <img 
                     src={uploadedImage} 
                     alt="Pet preview" 
-                    className="w-20 h-20 rounded-2xl object-cover border-2 border-pet-primary/20"
+                    className="w-24 h-24 rounded-3xl object-cover border-2 border-pet-primary/20"
                   />
                   <Button
                     type="button"
                     size="sm"
                     variant="destructive"
-                    className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0"
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0"
                     onClick={removeImage}
                   >
                     <X className="h-3 w-3" />
                   </Button>
                 </div>
               ) : (
-                <div className="w-20 h-20 rounded-2xl border-2 border-dashed border-pet-primary/30 flex items-center justify-center">
-                  <Upload className="h-6 w-6 text-pet-primary/50" />
+                <div className="w-24 h-24 rounded-3xl border-2 border-dashed border-pet-primary/30 flex items-center justify-center">
+                  <Upload className="h-8 w-8 text-pet-primary/50" />
                 </div>
               )}
               <div>
@@ -159,7 +147,7 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
                 />
                 <Label 
                   htmlFor="pet-image" 
-                  className="cursor-pointer inline-flex items-center px-3 py-2 bg-pet-primary/10 text-pet-primary rounded-2xl text-sm hover:bg-pet-primary/20 transition-colors"
+                  className="cursor-pointer inline-flex items-center px-3 py-2 bg-pet-primary/10 text-pet-primary rounded-3xl text-sm hover:bg-pet-primary/20 transition-colors"
                 >
                   <Upload className="h-4 w-4 mr-2" />
                   Upload Photo
@@ -174,7 +162,7 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Enter pet's name"
-              className="rounded-2xl"
+              className="rounded-3xl"
               required
             />
           </div>
@@ -182,8 +170,9 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
           {/* Species and Breed in same row */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
+              {/* <Label htmlFor="species">Species</Label> */}
               <Select value={formData.species} onValueChange={(value) => setFormData({ ...formData, species: value })}>
-                <SelectTrigger className="rounded-2xl">
+                <SelectTrigger className="rounded-3xl">
                   <SelectValue placeholder="Select species" />
                 </SelectTrigger>
                 <SelectContent>
@@ -198,21 +187,23 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
             </div>
 
             <div className="space-y-2">
+              {/* <Label htmlFor="breed">Breed</Label> */}
               <Input
                 id="breed"
                 value={formData.breed}
                 onChange={(e) => setFormData({ ...formData, breed: e.target.value })}
                 placeholder="Enter breed"
-                className="rounded-2xl"
+                className="rounded-3xl"
                 required
               />
             </div>
           </div>
 
           <div className="space-y-2">
+            {/* <Label>Birthdate</Label> */}
             <div className="flex space-x-2">
               <Select value={birthYear} onValueChange={value => { setBirthYear(value); setBirthDay(''); }}>
-                <SelectTrigger className="rounded-2xl w-full">
+                <SelectTrigger className="rounded-3xl w-full">
                   <SelectValue placeholder="Year" />
                 </SelectTrigger>
                 <SelectContent>
@@ -222,7 +213,7 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
                 </SelectContent>
               </Select>
               <Select value={birthMonth} onValueChange={value => { setBirthMonth(value); setBirthDay(''); }}>
-                <SelectTrigger className="rounded-2xl w-full">
+                <SelectTrigger className="rounded-3xl w-full">
                   <SelectValue placeholder="Month" />
                 </SelectTrigger>
                 <SelectContent>
@@ -232,7 +223,7 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
                 </SelectContent>
               </Select>
               <Select value={birthDay} onValueChange={setBirthDay} disabled={!birthYear || !birthMonth}>
-                <SelectTrigger className="rounded-2xl w-full">
+                <SelectTrigger className="rounded-3xl w-full">
                   <SelectValue placeholder="Day" />
                 </SelectTrigger>
                 <SelectContent>
@@ -250,16 +241,16 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               placeholder="Any special notes about your pet..."
-              className="rounded-2xl"
+              className="rounded-3xl"
               rows={3}
             />
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="rounded-2xl">
+            <Button type="button" variant="outline" onClick={onClose} className="rounded-3xl">
               Cancel
             </Button>
-            <Button type="submit" className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl">
+            <Button type="submit" className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl">
               Add Pet
             </Button>
           </div>
