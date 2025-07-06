@@ -44,6 +44,13 @@ const TaskCard = ({ task, onComplete, onRemind }: TaskCardProps) => {
     }
   };
 
+  const handleSetNotification = () => {
+    onRemind(task.id);
+    // Add visual feedback
+    console.log(`Notification set for task: ${task.title}`);
+    // You could also show a toast notification here
+  };
+
   return (
     <Card className={`p-4 transition-all duration-200 rounded-2xl ${task.completed ? 'opacity-60 bg-pet-background/30' : 'pet-card-shadow hover:shadow-lg bg-white'}`}>
       <div className="flex items-start justify-between">
@@ -81,8 +88,9 @@ const TaskCard = ({ task, onComplete, onRemind }: TaskCardProps) => {
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => onRemind(task.id)}
+                onClick={handleSetNotification}
                 className="h-8 w-8 p-0 hover:bg-pet-background rounded-xl"
+                title="Set notification"
               >
                 <Bell className="h-4 w-4 text-pet-orange" />
               </Button>
@@ -90,6 +98,7 @@ const TaskCard = ({ task, onComplete, onRemind }: TaskCardProps) => {
                 size="sm"
                 onClick={() => onComplete(task.id)}
                 className="bg-pet-primary hover:bg-pet-primary/90 text-white h-8 w-8 p-0 rounded-xl"
+                title="Mark as complete"
               >
                 ✓
               </Button>

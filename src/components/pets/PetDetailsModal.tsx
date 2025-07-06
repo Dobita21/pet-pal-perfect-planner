@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Heart, Activity, Clock, MapPin } from 'lucide-react';
+import { Calendar, Heart, Activity, Clock, MapPin, Edit, Plus } from 'lucide-react';
 import { Pet, HealthMetric, Task } from '@/hooks/usePetData';
 
 interface PetDetailsModalProps {
@@ -53,8 +53,6 @@ const PetDetailsModal = ({ pet, isOpen, onClose, healthMetrics, petTasks }: PetD
             <div className="w-24 h-24 rounded-lg bg-gradient-to-br from-pet-primary/20 to-pet-secondary/20 flex items-center justify-center text-3xl mx-auto mb-2">
               {getSpeciesEmoji(pet.species)}
             </div>
-            <h2 className="text-lg font-bold text-pet-primary mb-1">{pet.name}</h2>
-            <p className="text-muted-foreground text-xs">{pet.breed} • {pet.age}</p>
           </div>
 
           {/* Basic Info */}
@@ -104,10 +102,10 @@ const PetDetailsModal = ({ pet, isOpen, onClose, healthMetrics, petTasks }: PetD
           <div>
             <h3 className="font-semibold mb-2 text-pet-primary flex items-center text-xs">
               <Calendar className="h-3 w-3 mr-1" />
-              Recent Tasks
+              Recent Task
             </h3>
             <div className="space-y-2">
-              {petTasks.slice(0, 2).map(task => (
+              {petTasks.slice(0, 1).map(task => (
                 <Card key={task.id} className={`p-2 rounded-2xl ${task.completed ? 'bg-pet-green/5' : 'bg-white'}`}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
@@ -143,12 +141,20 @@ const PetDetailsModal = ({ pet, isOpen, onClose, healthMetrics, petTasks }: PetD
             </Card>
           )}
 
-          <Button 
-            onClick={onClose} 
-            className="w-full bg-pet-primary hover:bg-pet-primary/90 rounded-3xl h-10 text-sm"
-          >
-            Close
-          </Button>
+          <div className="flex space-x-2">
+            <Button 
+              className="flex-1 bg-pet-primary hover:bg-pet-primary/90 rounded-3xl h-10 text-sm"
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Edit
+            </Button>
+            <Button 
+              className="flex-1 bg-pet-secondary hover:bg-pet-secondary/90 rounded-3xl h-10 text-sm"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Task
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

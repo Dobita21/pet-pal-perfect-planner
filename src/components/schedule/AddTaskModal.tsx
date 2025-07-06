@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Trash2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -50,6 +51,20 @@ const defaultTaskTypes = [
   { value: 'play', label: '🎾 Playtime' },
 ];
 
+const recurrenceOptions = [
+  { value: 'none', label: 'No repeat' },
+  { value: '1day', label: 'Every day' },
+  { value: '3days', label: 'Every 3 days' },
+  { value: '5days', label: 'Every 5 days' },
+  { value: '7days', label: 'Every week' },
+  { value: '2weeks', label: 'Every 2 weeks' },
+  { value: '1month', label: 'Every month' },
+  { value: '3months', label: 'Every 3 months' },
+  { value: '6months', label: 'Every 6 months' },
+  { value: '12months', label: 'Every year' },
+  { value: 'monthly', label: 'Same date every month' },
+];
+
 const AddTaskModal = ({ isOpen, onClose, onAddTask, pets, initialDate }: AddTaskModalProps) => {
   const [formData, setFormData] = useState({
     title: '',
@@ -58,12 +73,24 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets, initialDate }: AddTask
     type: 'feeding' as string,
     petName: '',
     priority: 'medium' as Task['priority'],
-    date: new Date()
+    date: new Date(),
+    recurrence: 'none'
   });
   const [taskTypes, setTaskTypes] = useState(defaultTaskTypes);
   const [customType, setCustomType] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
   const customInputRef = useRef<HTMLInputElement>(null);
+
+  const getSpeciesEmoji = (species: string) => {
+    switch (species.toLowerCase()) {
+      case 'dog': return '🐕';
+      case 'cat': return '🐱';
+      case 'bird': return '🦜';
+      case 'fish': return '🐠';
+      case 'rabbit': return '🐰';
+      default: return '🐾';
+    }
+  };
 
   const handleAddCustomType = () => {
     if (customType.trim() && !taskTypes.some(t => t.value === customType.trim().toLowerCase())) {
@@ -80,7 +107,12 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets, initialDate }: AddTask
     e.preventDefault();
     
     onAddTask({
-      ...formData,
+      title: formData.title,
+      description: formData.description,
+      time: formData.time,
+      type: formData.type,
+      petName: formData.petName,
+      priority: formData.priority,
       date: formData.date
     });
     
@@ -91,7 +123,8 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets, initialDate }: AddTask
       type: 'feeding',
       petName: '',
       priority: 'medium',
-      date: new Date()
+      date: new Date(),
+      recurrence: 'none'
     });
     
     onClose();
@@ -141,7 +174,6 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets, initialDate }: AddTask
                 <SelectValue placeholder="Select task type" />
               </SelectTrigger>
               <SelectContent className="rounded-2xl max-h-60 overflow-y-auto">
-                {/* Fixed (sticky) header for task type */}
                 <div className="sticky top-0 z-10 bg-white/95 pb-1 mb-1 border-b border-muted-foreground/10">
                   <div className="font-semibold text-pet-primary px-3 py-2 text-sm">
                     Task Type
@@ -150,7 +182,6 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets, initialDate }: AddTask
                 {taskTypes.map(t => (
                   <SelectItem key={t.value} value={t.value} className="flex items-center justify-between group">
                     <span>{t.label}</span>
-                    {/* Show bin icon only for custom types (not default) */}
                     {!defaultTaskTypes.some(dt => dt.value === t.value) && (
                       <button
                         type="button"
@@ -215,7 +246,6 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets, initialDate }: AddTask
           </div>
 
           <div className="space-y-1">
-            {/* <Label htmlFor="pet" className="text-sm">Pet</Label> */}
             <Select value={formData.petName} onValueChange={(value) => setFormData({ ...formData, petName: value })}>
               <SelectTrigger className="rounded-2xl h-10">
                 <SelectValue placeholder="Select pet" />
@@ -223,7 +253,7 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets, initialDate }: AddTask
               <SelectContent className="rounded-2xl">
                 {pets.map(pet => (
                   <SelectItem key={pet.id} value={pet.name}>
-                    {pet.avatar} {pet.name}
+                    {getSpeciesEmoji(pet.species)} {pet.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -231,7 +261,6 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets, initialDate }: AddTask
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            {/* <Label htmlFor="date" className="text-sm">Date</Label> */}
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -266,6 +295,22 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets, initialDate }: AddTask
           </div>
 
           <div className="space-y-1">
+            <Label htmlFor="recurrence" className="text-sm">Set every...</Label>
+            <Select value={formData.recurrence} onValueChange={(value) => setFormData({ ...formData, recurrence: value })}>
+              <SelectTrigger className="rounded-2xl h-10">
+                <SelectValue placeholder="Select recurrence" />
+              </SelectTrigger>
+              <SelectContent className="rounded-2xl">
+                {recurrenceOptions.map(option => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-1">
             <Label htmlFor="priority" className="text-sm">Priority</Label>
             <Select value={formData.priority} onValueChange={(value: Task['priority']) => setFormData({ ...formData, priority: value })}>
               <SelectTrigger className="rounded-2xl h-10">
@@ -280,7 +325,6 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask, pets, initialDate }: AddTask
           </div>
 
           <div className="space-y-1">
-            {/* <Label htmlFor="description" className="text-sm">Description</Label> */}
             <Textarea
               id="description"
               value={formData.description}

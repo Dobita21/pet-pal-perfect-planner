@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 interface Pet {
   id: string;
@@ -61,14 +60,6 @@ const PetCard = ({ pet, onSelect }: PetCardProps) => {
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-base text-pet-primary truncate">{pet.name}</h3>
           <p className="text-sm text-muted-foreground">{pet.breed} • {pet.age}</p>
-          
-          {pet.nextTask && (
-            <div className="mt-2">
-              <Badge variant="secondary" className="text-xs bg-pet-secondary/10 text-pet-secondary rounded-2xl border-pet-secondary/20">
-                {pet.nextTask.type} at {pet.nextTask.time}
-              </Badge>
-            </div>
-          )}
         </div>
       </div>
     </Card>
