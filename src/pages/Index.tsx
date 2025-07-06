@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import MobileHeader from '@/components/layout/MobileHeader';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -49,9 +50,13 @@ const Index = () => {
       case 'schedule': return 'Pet Pal';
       case 'health': return 'Schedule';
       case 'tasks': return 'Tasks';
-      case 'profile': return 'Profile';
+      case 'mypets': return 'My Pets';
       default: return 'Pet Pal';
     }
+  };
+
+  const handleProfileClick = () => {
+    setActiveTab('mypets');
   };
 
   const renderScheduleTab = () => (
@@ -146,6 +151,45 @@ const Index = () => {
     </div>
   );
 
+  const renderMyPetsTab = () => (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-foreground">All My Pets</h2>
+        <Button 
+          size="sm" 
+          className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl" 
+          onClick={() => setShowAddPetModal(true)}
+        >
+          + Add Pet
+        </Button>
+      </div>
+
+      {pets.length === 0 ? (
+        <Card className="p-8 text-center rounded-3xl">
+          <div className="text-6xl mb-4">🐾</div>
+          <h3 className="text-lg font-semibold text-pet-primary mb-2">No pets yet</h3>
+          <p className="text-muted-foreground mb-4">Add your first pet to get started</p>
+          <Button 
+            onClick={() => setShowAddPetModal(true)}
+            className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl"
+          >
+            Add Pet
+          </Button>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 gap-4">
+          {pets.map(pet => (
+            <PetCard
+              key={pet.id}
+              pet={pet}
+              onSelect={handlePetSelect}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'schedule': return renderScheduleTab();
@@ -165,7 +209,6 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-foreground">All Tasks</h2>
             <Button size="sm" className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl" onClick={() => setShowAddTaskModal(true)}>
-              {/* <Plus className="h-4 w-4 mr-1" /> */}
               + New Task
             </Button>
           </div>
@@ -229,58 +272,17 @@ const Index = () => {
           </div>
         </div>
       );
-      case 'profile': return (
-        <div className="space-y-6">
-          <div className="text-center">
-            <div className="w-24 h-24 rounded-full pet-gradient mx-auto mb-4 flex items-center justify-center text-3xl">
-              👤
-            </div>
-            <h2 className="text-xl font-bold text-foreground">Pet Parent Profile</h2>
-            <p className="text-muted-foreground">Managing {pets.length} beloved pets</p>
-          </div>
-
-          <div className="space-y-3">
-            <Card className="p-4 rounded-3xl">
-              <h3 className="font-semibold mb-2">Account Settings</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>Notifications</span>
-                  <span className="text-pet-green">Enabled</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Data Sync</span>
-                  <span className="text-pet-green">Active</span>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-4 rounded-3xl">
-              <h3 className="font-semibold mb-2">App Statistics</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>Tasks Completed</span>
-                  <span className="font-medium">{completedTasks.length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Days Active</span>
-                  <span className="font-medium">47</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Health Records</span>
-                  <span className="font-medium">{healthMetrics.length}</span>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
-      );
+      case 'mypets': return renderMyPetsTab();
       default: return renderScheduleTab();
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <MobileHeader title={getPageTitle()} />
+      <MobileHeader 
+        title={getPageTitle()} 
+        onProfileClick={handleProfileClick}
+      />
       
       <main className="px-4 py-6 pb-24 animate-fade-in">
         {renderActiveTab()}

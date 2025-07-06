@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -6,8 +7,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Upload, X } from 'lucide-react';
-import { Calendar } from '@/components/ui/calendar'; // Make sure you have a Calendar component
-import { format } from 'date-fns'; // For formatting the date
 
 interface Pet {
   id: string;
@@ -33,7 +32,6 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
     name: '',
     species: '',
     breed: '',
-    age: '', // will store ISO string or formatted date
     notes: ''
   });
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -54,27 +52,47 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
   const daysInMonth = getDaysInMonth(birthYear, birthMonth);
   const days = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`.padStart(2, '0'));
 
-  // Update formData.age when dropdowns change
-  React.useEffect(() => {
-    if (birthYear && birthMonth && birthDay) {
-      setFormData({ ...formData, age: `${birthYear}-${birthMonth}-${birthDay}` });
+  // Calculate age from birth date
+  const calculateAge = (year: string, month: string, day: string) => {
+    if (!year || !month || !day) return '';
+    
+    const birthDate = new Date(Number(year), Number(month) - 1, Number(day));
+    const today = new Date();
+    
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
     }
-  }, [birthYear, birthMonth, birthDay]);
+    
+    if (age === 0) {
+      const monthsOld = monthDifference < 0 ? 12 + monthDifference : monthDifference;
+      return monthsOld <= 1 ? `${monthsOld} month` : `${monthsOld} months`;
+    }
+    
+    return age === 1 ? '1 year' : `${age} years`;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const calculatedAge = calculateAge(birthYear, birthMonth, birthDay);
     
     const newPet = {
       name: formData.name,
       species: formData.species,
       breed: formData.breed,
-      age: formData.age,
+      age: calculatedAge,
       avatar: uploadedImage || getSpeciesEmoji(formData.species)
     };
 
     onAddPet(newPet);
-    setFormData({ name: '', species: '', breed: '', age: '', notes: '' });
+    setFormData({ name: '', species: '', breed: '', notes: '' });
     setUploadedImage(null);
+    setBirthYear('');
+    setBirthMonth('');
+    setBirthDay('');
     onClose();
   };
 
@@ -106,7 +124,7 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md max-w-[95vw] w-[95%] max-h-[95vh] overflow-y-auto rounded-3xl">
+      <DialogContent className="sm:max-w-md max-w-[76vw] w-[76%] max-h-[95vh] overflow-y-auto rounded-3xl">
         <DialogHeader>
           <DialogTitle className="text-pet-primary">Add New Pet</DialogTitle>
         </DialogHeader>
@@ -170,7 +188,6 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
           {/* Species and Breed in same row */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              {/* <Label htmlFor="species">Species</Label> */}
               <Select value={formData.species} onValueChange={(value) => setFormData({ ...formData, species: value })}>
                 <SelectTrigger className="rounded-3xl">
                   <SelectValue placeholder="Select species" />
@@ -187,7 +204,6 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
             </div>
 
             <div className="space-y-2">
-              {/* <Label htmlFor="breed">Breed</Label> */}
               <Input
                 id="breed"
                 value={formData.breed}
@@ -200,7 +216,6 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
           </div>
 
           <div className="space-y-2">
-            {/* <Label>Birthdate</Label> */}
             <div className="flex space-x-2">
               <Select value={birthYear} onValueChange={value => { setBirthYear(value); setBirthDay(''); }}>
                 <SelectTrigger className="rounded-3xl w-full">
@@ -233,6 +248,11 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
                 </SelectContent>
               </Select>
             </div>
+            {birthYear && birthMonth && birthDay && (
+              <p className="text-sm text-muted-foreground text-center">
+                Age: {calculateAge(birthYear, birthMonth, birthDay)}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">

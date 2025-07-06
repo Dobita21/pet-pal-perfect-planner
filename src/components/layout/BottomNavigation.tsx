@@ -11,7 +11,7 @@ const tabs = [
   { id: 'schedule', label: 'Home', icon: Calendar },
   { id: 'health', label: 'Schedule', icon: Calendar },
   { id: 'tasks', label: 'Tasks', icon: List },
-  { id: 'profile', label: 'Profile', icon: User },
+  { id: 'mypets', label: 'My Pets', icon: User },
 ];
 
 const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationProps) => {
