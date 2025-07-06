@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import MobileHeader from '@/components/layout/MobileHeader';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -51,12 +50,13 @@ const Index = () => {
       case 'health': return 'Schedule';
       case 'tasks': return 'Tasks';
       case 'mypets': return 'My Pets';
+      case 'profile': return 'Profile';
       default: return 'Pet Pal';
     }
   };
 
   const handleProfileClick = () => {
-    setActiveTab('mypets');
+    setActiveTab('profile');
   };
 
   const renderScheduleTab = () => (
@@ -190,6 +190,65 @@ const Index = () => {
     </div>
   );
 
+  const renderProfileTab = () => (
+    <div className="space-y-6">
+      <div className="text-center">
+        <div className="w-24 h-24 rounded-full bg-pet-primary/20 flex items-center justify-center text-4xl mx-auto mb-4">
+          👤
+        </div>
+        <h2 className="text-xl font-bold text-pet-primary mb-2">User Profile</h2>
+        <p className="text-muted-foreground">Manage your account settings</p>
+      </div>
+      
+      <div className="space-y-4">
+        <Card className="p-4 rounded-2xl">
+          <h3 className="font-semibold mb-2 text-pet-primary">Account Information</h3>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span>Name</span>
+              <span className="font-medium">Pet Owner</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Email</span>
+              <span className="font-medium">user@example.com</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Pets</span>
+              <span className="font-medium">{pets.length}</span>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-4 rounded-2xl">
+          <h3 className="font-semibold mb-2 text-pet-primary">Quick Actions</h3>
+          <div className="space-y-2">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start rounded-2xl"
+              onClick={() => setActiveTab('mypets')}
+            >
+              My Pets
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full justify-start rounded-2xl"
+              onClick={() => setActiveTab('health')}
+            >
+              Health Records
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full justify-start rounded-2xl"
+              onClick={() => setActiveTab('tasks')}
+            >
+              All Tasks
+            </Button>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'schedule': return renderScheduleTab();
@@ -273,6 +332,7 @@ const Index = () => {
         </div>
       );
       case 'mypets': return renderMyPetsTab();
+      case 'profile': return renderProfileTab();
       default: return renderScheduleTab();
     }
   };

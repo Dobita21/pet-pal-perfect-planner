@@ -1,11 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Heart, Activity, Clock, MapPin, Edit, Plus } from 'lucide-react';
+import { Calendar, Heart, Activity, Clock, MapPin, Edit, Plus, Menu, Image, Stethoscope } from 'lucide-react';
 import { Pet, HealthMetric, Task } from '@/hooks/usePetData';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 interface PetDetailsModalProps {
   pet: Pet | null;
@@ -38,41 +39,88 @@ const PetDetailsModal = ({ pet, isOpen, onClose, healthMetrics, petTasks }: PetD
     }
   };
 
+  const isUploadedImage = pet.avatar.startsWith('data:') || pet.avatar.startsWith('http');
+
+  const handleNavigateToHealth = () => {
+    // This would typically use navigation context or props
+    // For now, we'll just close the modal and the parent can handle navigation
+    onClose();
+    // Parent component should handle navigation to health page
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-[95vw] max-w-sm max-h-[90vh] overflow-y-auto rounded-3xl mx-auto p-4">
         <DialogHeader className="pb-2">
-          <DialogTitle className="text-center text-lg font-bold text-pet-primary">
-            {pet.name}'s Profile
-          </DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-center text-lg font-bold text-pet-primary">
+              {pet.name}'s Profile
+            </DialogTitle>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <Menu className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-white border shadow-lg">
+                <DropdownMenuItem className="cursor-pointer">
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit Pet
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Task
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  <Image className="h-4 w-4 mr-2" />
+                  Gallery
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer" onClick={handleNavigateToHealth}>
+                  <Stethoscope className="h-4 w-4 mr-2" />
+                  Health
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </DialogHeader>
         
         <div className="space-y-3">
-          {/* Pet Header */}
-          <div className="text-center">
-            <div className="w-24 h-24 rounded-lg bg-gradient-to-br from-pet-primary/20 to-pet-secondary/20 flex items-center justify-center text-3xl mx-auto mb-2">
-              {getSpeciesEmoji(pet.species)}
+          {/* Pet Header and Basic Info in 2 columns */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Pet Photo */}
+            <div className="flex justify-center">
+              <div className="w-24 h-24 rounded-lg bg-gradient-to-br from-pet-primary/20 to-pet-secondary/20 flex items-center justify-center text-3xl overflow-hidden">
+                {isUploadedImage ? (
+                  <img 
+                    src={pet.avatar} 
+                    alt={pet.name} 
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                ) : (
+                  getSpeciesEmoji(pet.species)
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* Basic Info */}
-          <Card className="p-4 rounded-2xl">
-            <h3 className="font-semibold mb-2 text-pet-primary text-xs">Basic Information</h3>
-            <div className="space-y-1 text-xs">
-              <div className="flex justify-between">
-                <span>Species</span>
-                <span className="capitalize font-medium">{pet.species}</span>
+            {/* Basic Info */}
+            <Card className="p-3 rounded-2xl">
+              <h3 className="font-semibold mb-2 text-pet-primary text-xs">{pet.name}</h3>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span>Species</span>
+                  <span className="capitalize font-medium">{pet.species}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Breed</span>
+                  <span className="font-medium">{pet.breed}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Age</span>
+                  <span className="font-medium">{pet.age}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span>Breed</span>
-                <span className="font-medium">{pet.breed}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Age</span>
-                <span className="font-medium">{pet.age}</span>
-              </div>
-            </div>
-          </Card>
+            </Card>
+          </div>
 
           {/* Health Metrics */}
           <div>
@@ -140,21 +188,6 @@ const PetDetailsModal = ({ pet, isOpen, onClose, healthMetrics, petTasks }: PetD
               </div>
             </Card>
           )}
-
-          <div className="flex space-x-2">
-            <Button 
-              className="flex-1 bg-pet-primary hover:bg-pet-primary/90 rounded-3xl h-10 text-sm"
-            >
-              <Edit className="h-4 w-4 mr-2" />
-              Edit
-            </Button>
-            <Button 
-              className="flex-1 bg-pet-secondary hover:bg-pet-secondary/90 rounded-3xl h-10 text-sm"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Task
-            </Button>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
