@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, Heart, Activity, Clock, MapPin, Edit, Plus, Menu, Image, Stethoscope } from 'lucide-react';
 import { Pet, HealthMetric, Task } from '@/hooks/usePetData';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { useNavigate } from 'react-router-dom';
 
 interface PetDetailsModalProps {
   pet: Pet | null;
@@ -14,9 +15,21 @@ interface PetDetailsModalProps {
   onClose: () => void;
   healthMetrics: HealthMetric[];
   petTasks: Task[];
+  onEditPet?: (pet: Pet) => void;
+  onAddTask?: (pet: Pet) => void;
 }
 
-const PetDetailsModal = ({ pet, isOpen, onClose, healthMetrics, petTasks }: PetDetailsModalProps) => {
+const PetDetailsModal = ({ 
+  pet, 
+  isOpen, 
+  onClose, 
+  healthMetrics, 
+  petTasks, 
+  onEditPet,
+  onAddTask 
+}: PetDetailsModalProps) => {
+  const navigate = useNavigate();
+
   if (!pet) return null;
 
   const getSpeciesEmoji = (species: string) => {
@@ -41,16 +54,32 @@ const PetDetailsModal = ({ pet, isOpen, onClose, healthMetrics, petTasks }: PetD
 
   const isUploadedImage = pet.avatar.startsWith('data:') || pet.avatar.startsWith('http');
 
-  const handleNavigateToHealth = () => {
-    // This would typically use navigation context or props
-    // For now, we'll just close the modal and the parent can handle navigation
+  const handleEditPet = () => {
+    console.log('Edit pet:', pet.name);
+    onEditPet?.(pet);
     onClose();
-    // Parent component should handle navigation to health page
+  };
+
+  const handleAddTask = () => {
+    console.log('Add task for:', pet.name);
+    onAddTask?.(pet);
+    onClose();
+  };
+
+  const handleGallery = () => {
+    console.log('Open gallery for:', pet.name);
+    // Would open pet photo gallery
+    onClose();
+  };
+
+  const handleNavigateToHealth = () => {
+    onClose();
+    navigate('/health');
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[95vw] max-w-sm max-h-[90vh] overflow-y-auto rounded-3xl mx-auto p-4">
+      <DialogContent className="w-[95vw] max-w-sm max-h-[90vh] overflow-y-auto rounded-3xl mx-auto p-4" hideCloseButton>
         <DialogHeader className="pb-2">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-center text-lg font-bold text-pet-primary">
@@ -62,16 +91,16 @@ const PetDetailsModal = ({ pet, isOpen, onClose, healthMetrics, petTasks }: PetD
                   <Menu className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-white border shadow-lg">
-                <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuContent align="end" className="bg-white border shadow-lg z-50">
+                <DropdownMenuItem className="cursor-pointer" onClick={handleEditPet}>
                   <Edit className="h-4 w-4 mr-2" />
                   Edit Pet
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem className="cursor-pointer" onClick={handleAddTask}>
                   <Plus className="h-4 w-4 mr-2" />
                   Add Task
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem className="cursor-pointer" onClick={handleGallery}>
                   <Image className="h-4 w-4 mr-2" />
                   Gallery
                 </DropdownMenuItem>
@@ -176,18 +205,6 @@ const PetDetailsModal = ({ pet, isOpen, onClose, healthMetrics, petTasks }: PetD
               ))}
             </div>
           </div>
-
-          {/* Next Task */}
-          {pet.nextTask && (
-            <Card className="p-3 rounded-3xl bg-pet-primary/5 border-pet-primary/20">
-              <h3 className="font-semibold mb-1 text-pet-primary text-xs">Next Task</h3>
-              <div className="flex items-center space-x-2">
-                <Calendar className="h-3 w-3 text-pet-primary" />
-                <span className="font-medium text-xs">{pet.nextTask.type}</span>
-                <span className="text-muted-foreground text-xs">at {pet.nextTask.time}</span>
-              </div>
-            </Card>
-          )}
         </div>
       </DialogContent>
     </Dialog>

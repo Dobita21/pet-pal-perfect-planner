@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MobileHeader from '@/components/layout/MobileHeader';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import PetCard from '@/components/pets/PetCard';
@@ -17,6 +18,7 @@ import TaskDetailsModal from '@/components/schedule/TaskDetailsModal';
 import UserPlanSection from '@/components/plans/UserPlanSection';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('schedule');
   const [showAddPetModal, setShowAddPetModal] = useState(false);
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
@@ -25,6 +27,7 @@ const Index = () => {
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [showTaskDetails, setShowTaskDetails] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [isSignedIn, setIsSignedIn] = useState(false); // Mock auth state
   const { pets, tasks, healthMetrics, completeTask, setReminder, addPet, addTask } = usePetData();
 
   const todaysTasks = tasks.filter(task => !task.completed);
@@ -57,6 +60,20 @@ const Index = () => {
 
   const handleProfileClick = () => {
     setActiveTab('profile');
+  };
+
+  const handleSignInClick = () => {
+    navigate('/signin');
+  };
+
+  const handleEditPet = (pet: Pet) => {
+    console.log('Edit pet:', pet.name);
+    // Would open edit pet modal
+  };
+
+  const handleAddTaskForPet = (pet: Pet) => {
+    setSelectedPet(pet);
+    setShowAddTaskModal(true);
   };
 
   const renderScheduleTab = () => (
@@ -232,7 +249,7 @@ const Index = () => {
             <Button 
               variant="outline" 
               className="w-full justify-start rounded-2xl"
-              onClick={() => setActiveTab('health')}
+              onClick={() => navigate('/health')}
             >
               Health Records
             </Button>
@@ -342,6 +359,8 @@ const Index = () => {
       <MobileHeader 
         title={getPageTitle()} 
         onProfileClick={handleProfileClick}
+        onSignInClick={handleSignInClick}
+        isSignedIn={isSignedIn}
       />
       
       <main className="px-4 py-6 pb-24 animate-fade-in">
@@ -370,6 +389,8 @@ const Index = () => {
         onClose={() => setShowPetDetails(false)}
         healthMetrics={healthMetrics}
         petTasks={selectedPet ? getPetTasks(selectedPet.name) : []}
+        onEditPet={handleEditPet}
+        onAddTask={handleAddTaskForPet}
       />
 
       <TaskDetailsModal
