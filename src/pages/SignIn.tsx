@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -7,30 +7,54 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { signIn, signUp, user } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock authentication - in real app would use actual auth
-    console.log('Sign in/up with:', { email, password, isSignUp });
-    navigate('/');
+    setLoading(true);
+
+    try {
+      if (isSignUp) {
+        const { error } = await signUp(email, password);
+        if (!error) {
+          // Success message is handled by the useAuth hook
+        }
+      } else {
+        const { error } = await signIn(email, password);
+        if (!error) {
+          navigate('/');
+        }
+      }
+    } catch (error) {
+      console.error('Auth error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleSignIn = () => {
-    console.log('Sign in with Google');
-    // Mock Google auth - would integrate with actual service
-    navigate('/');
+    console.log('Google sign in not implemented yet');
+    // Would implement Google OAuth with Supabase
   };
 
   const handleFacebookSignIn = () => {
-    console.log('Sign in with Facebook');
-    // Mock Facebook auth - would integrate with actual service  
-    navigate('/');
+    console.log('Facebook sign in not implemented yet');
+    // Would implement Facebook OAuth with Supabase
   };
 
   return (
@@ -56,6 +80,7 @@ const SignIn = () => {
             onClick={handleGoogleSignIn}
             variant="outline"
             className="w-full rounded-2xl border-2 hover:bg-gray-50"
+            disabled={loading}
           >
             <div className="flex items-center justify-center space-x-2">
               <span className="text-lg">🟢</span>
@@ -67,6 +92,7 @@ const SignIn = () => {
             onClick={handleFacebookSignIn}
             variant="outline"
             className="w-full rounded-2xl border-2 hover:bg-blue-50"
+            disabled={loading}
           >
             <div className="flex items-center justify-center space-x-2">
               <span className="text-lg">🔵</span>
@@ -91,6 +117,7 @@ const SignIn = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="rounded-2xl"
                 required
+                disabled={loading}
               />
             </div>
 
@@ -103,14 +130,17 @@ const SignIn = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className="rounded-2xl"
                 required
+                disabled={loading}
+                minLength={6}
               />
             </div>
 
             <Button
               type="submit"
               className="w-full bg-pet-primary hover:bg-pet-primary/90 rounded-2xl"
+              disabled={loading}
             >
-              {isSignUp ? 'Create Account' : 'Sign In'}
+              {loading ? 'Please wait...' : (isSignUp ? 'Create Account' : 'Sign In')}
             </Button>
           </form>
 
@@ -119,6 +149,7 @@ const SignIn = () => {
               variant="link"
               onClick={() => setIsSignUp(!isSignUp)}
               className="text-pet-primary"
+              disabled={loading}
             >
               {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
             </Button>
