@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Card } from '@/components/ui/card';
@@ -5,12 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Clock, MapPin, Stethoscope, BluetoothConnectedIcon, CalendarSyncIcon } from 'lucide-react';
 import { format, isSameDay } from 'date-fns';
-import type { Task } from '@/hooks/usePetData';
+import { Task } from '@/hooks/useSupabaseTasks';
 import TaskCard from './TaskCard';
 
 interface CalendarScheduleProps {
   tasks: Task[];
-  onAddTask: (date: Date) => void; // <-- Change here
+  onAddTask: (date: Date) => void;
   onCompleteTask: (taskId: string) => void;
   onEditTask: (task: Task) => void;
   onDeleteTask: (taskId: string) => void;
@@ -29,7 +30,7 @@ const CalendarSchedule = ({
 }: CalendarScheduleProps) => {
   const getTasksForDate = (date: Date) => {
     return tasks.filter(task => {
-      const taskDate = task.date || new Date();
+      const taskDate = task.date ? new Date(task.date) : new Date();
       return isSameDay(taskDate, date);
     });
   };
@@ -63,7 +64,7 @@ const CalendarSchedule = ({
     .filter(task => !!task.date)
     .map(task => {
       // Remove time for comparison
-      const d = task.date as Date;
+      const d = new Date(task.date!);
       return new Date(d.getFullYear(), d.getMonth(), d.getDate());
     });
 
@@ -104,7 +105,7 @@ const CalendarSchedule = ({
           className="rounded-md border-0"
           modifiers={{ hasTask: uniqueTaskDates }}
           modifiersClassNames={{
-            hasTask: "text-pet-primary font-bold" // or use bg-pet-primary/10 for background
+            hasTask: "text-pet-primary font-bold"
           }}
         />
       </Card>
@@ -136,7 +137,7 @@ const CalendarSchedule = ({
                 key={task.id}
                 task={task}
                 onComplete={onCompleteTask}
-                onRemind={() => {}} // Replace with your reminder handler if you have one
+                onRemind={() => {}}
                 onRemove={onDeleteTask}
               />
             ))}
