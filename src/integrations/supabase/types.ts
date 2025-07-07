@@ -9,7 +9,175 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      health_metrics: {
+        Row: {
+          created_at: string | null
+          id: string
+          pet_id: string
+          recorded_at: string | null
+          status: string | null
+          title: string
+          trend: string | null
+          unit: string
+          value: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          pet_id: string
+          recorded_at?: string | null
+          status?: string | null
+          title: string
+          trend?: string | null
+          unit: string
+          value: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          pet_id?: string
+          recorded_at?: string | null
+          status?: string | null
+          title?: string
+          trend?: string | null
+          unit?: string
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "health_metrics_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pets: {
+        Row: {
+          age: string
+          avatar: string | null
+          breed: string
+          created_at: string | null
+          id: string
+          name: string
+          notes: string | null
+          species: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          age: string
+          avatar?: string | null
+          breed: string
+          created_at?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          species: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          age?: string
+          avatar?: string | null
+          breed?: string
+          created_at?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          species?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string | null
+          user_plan: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+          user_plan?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string | null
+          user_plan?: string | null
+        }
+        Relationships: []
+      }
+      tasks: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          date: string | null
+          description: string | null
+          id: string
+          pet_id: string | null
+          priority: string | null
+          recurrence: string | null
+          time: string
+          title: string
+          type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          date?: string | null
+          description?: string | null
+          id?: string
+          pet_id?: string | null
+          priority?: string | null
+          recurrence?: string | null
+          time: string
+          title: string
+          type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          date?: string | null
+          description?: string | null
+          id?: string
+          pet_id?: string | null
+          priority?: string | null
+          recurrence?: string | null
+          time?: string
+          title?: string
+          type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

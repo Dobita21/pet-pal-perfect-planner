@@ -1,7 +1,9 @@
 
 import React from 'react';
-import { Bell, User } from 'lucide-react';
+import { Bell, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 interface MobileHeaderProps {
   title: string;  
@@ -9,7 +11,6 @@ interface MobileHeaderProps {
   showProfile?: boolean;
   onProfileClick?: () => void;
   onSignInClick?: () => void;
-  isSignedIn?: boolean;
 }
 
 const MobileHeader = ({ 
@@ -17,9 +18,10 @@ const MobileHeader = ({
   showNotifications = true, 
   showProfile = true, 
   onProfileClick, 
-  onSignInClick,
-  isSignedIn = false 
+  onSignInClick
 }: MobileHeaderProps) => {
+  const { user, signOut } = useAuth();
+
   return (
     <header className="bg-white border-b border-border px-4 py-3 flex items-center justify-between shadow-sm rounded-b-2xl">
       <div className="flex items-center space-x-3">
@@ -30,7 +32,7 @@ const MobileHeader = ({
       </div>
       
       <div className="flex items-center space-x-2">
-        {!isSignedIn ? (
+        {!user ? (
           <Button 
             variant="outline" 
             size="sm" 
@@ -48,9 +50,23 @@ const MobileHeader = ({
               </Button>
             )}
             {showProfile && (
-              <Button variant="ghost" size="sm" className="hover:bg-pet-background rounded-2xl" onClick={onProfileClick}>
-                <User className="h-5 w-5 text-pet-primary" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="hover:bg-pet-background rounded-2xl">
+                    <User className="h-5 w-5 text-pet-primary" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={onProfileClick}>
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={signOut}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </>
         )}

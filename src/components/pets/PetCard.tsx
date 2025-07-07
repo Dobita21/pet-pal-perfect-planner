@@ -8,11 +8,7 @@ interface Pet {
   species: string;
   breed: string;
   age: string;
-  avatar: string;
-  nextTask?: {
-    type: string;
-    time: string;
-  };
+  avatar: string | null;
 }
 
 interface PetCardProps {
@@ -32,7 +28,7 @@ const PetCard = ({ pet, onSelect }: PetCardProps) => {
     }
   };
 
-  const isUploadedImage = pet.avatar.startsWith('data:') || pet.avatar.startsWith('http');
+  const isUploadedImage = pet.avatar && (pet.avatar.startsWith('data:') || pet.avatar.startsWith('http'));
 
   return (
     <Card 

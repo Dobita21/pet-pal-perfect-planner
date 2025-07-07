@@ -7,27 +7,19 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Upload, X } from 'lucide-react';
-
-interface Pet {
-  id: string;
-  name: string;
-  species: string;
-  breed: string;
-  age: string;
-  avatar: string;
-  nextTask?: {
-    type: string;
-    time: string;
-  };
-}
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 interface AddPetModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddPet: (pet: Omit<Pet, 'id'>) => void;
+  onAddPet: (pet: any) => Promise<void>;
 }
 
 const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     name: '',
     species: '',
@@ -38,6 +30,7 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
   const [birthYear, setBirthYear] = useState('');
   const [birthMonth, setBirthMonth] = useState('');
   const [birthDay, setBirthDay] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Generate year and month options
   const currentYear = new Date().getFullYear();
@@ -74,26 +67,44 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
     return age === 1 ? '1 year' : `${age} years`;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const calculatedAge = calculateAge(birthYear, birthMonth, birthDay);
+    // Check if user is authenticated
+    if (!user) {
+      onClose();
+      navigate('/signin');
+      return;
+    }
     
-    const newPet = {
-      name: formData.name,
-      species: formData.species,
-      breed: formData.breed,
-      age: calculatedAge,
-      avatar: uploadedImage || getSpeciesEmoji(formData.species)
-    };
+    setIsSubmitting(true);
+    
+    try {
+      const calculatedAge = calculateAge(birthYear, birthMonth, birthDay);
+      
+      const newPet = {
+        name: formData.name,
+        species: formData.species,
+        breed: formData.breed,
+        age: calculatedAge,
+        avatar: uploadedImage,
+        notes: formData.notes
+      };
 
-    onAddPet(newPet);
-    setFormData({ name: '', species: '', breed: '', notes: '' });
-    setUploadedImage(null);
-    setBirthYear('');
-    setBirthMonth('');
-    setBirthDay('');
-    onClose();
+      await onAddPet(newPet);
+      
+      // Reset form
+      setFormData({ name: '', species: '', breed: '', notes: '' });
+      setUploadedImage(null);
+      setBirthYear('');
+      setBirthMonth('');
+      setBirthDay('');
+      onClose();
+    } catch (error) {
+      console.error('Error adding pet:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,7 +196,6 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
             />
           </div>
 
-          {/* Species and Breed in same row */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Select value={formData.species} onValueChange={(value) => setFormData({ ...formData, species: value })}>
@@ -265,8 +275,12 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
             <Button type="button" variant="outline" onClick={onClose} className="rounded-3xl">
               Cancel
             </Button>
-            <Button type="submit" className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl">
-              Add Pet
+            <Button 
+              type="submit" 
+              className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Adding...' : 'Add Pet'}
             </Button>
           </div>
         </form>
