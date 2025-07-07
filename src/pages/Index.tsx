@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileHeader from '@/components/layout/MobileHeader';
@@ -11,7 +10,7 @@ import AddTaskModal from '@/components/schedule/AddTaskModal';
 import InfinityCarousel from '@/components/carousel/InfinityCarousel';
 import PetDetailsModal from '@/components/pets/PetDetailsModal';
 import { useSupabasePets } from '@/hooks/useSupabasePets';
-import { useSupabaseTasks } from '@/hooks/useSupabaseTasks';
+import { useSupabaseTasks, Task } from '@/hooks/useSupabaseTasks';
 import { useSupabaseHealthMetrics } from '@/hooks/useSupabaseHealthMetrics';
 import { useSupabaseProfiles } from '@/hooks/useSupabaseProfiles';
 import { useAuth } from '@/hooks/useAuth';
@@ -19,7 +18,6 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Calendar, Heart, TrendingUp } from 'lucide-react';
 import { Pet } from '@/hooks/useSupabasePets';
-import { Task } from '@/hooks/useSupabaseTasks';
 import TaskDetailsModal from '@/components/schedule/TaskDetailsModal';
 import UserPlanSection from '@/components/plans/UserPlanSection';
 import EmptyPetCard from '@/components/pets/EmptyPetCard';
@@ -56,6 +54,12 @@ const Index = () => {
 
   const getPetTasks = (petId: string) => {
     return tasks.filter(task => task.pet_id === petId);
+  };
+
+  const getPetName = (petId: string | null) => {
+    if (!petId) return 'General Task';
+    const pet = pets.find(p => p.id === petId);
+    return pet?.name || 'Unknown Pet';
   };
 
   const getPageTitle = () => {
