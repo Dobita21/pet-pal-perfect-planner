@@ -35,7 +35,19 @@ export const useSupabaseProfiles = () => {
         .single();
 
       if (error) throw error;
-      setProfile(data);
+      
+      // Transform and type-cast the data
+      const transformedProfile: UserProfile = {
+        id: data.id,
+        email: data.email,
+        full_name: data.full_name,
+        avatar_url: data.avatar_url,
+        user_plan: (data.user_plan as 'free' | 'premium' | 'pro') || 'free',
+        created_at: data.created_at || new Date().toISOString(),
+        updated_at: data.updated_at || new Date().toISOString(),
+      };
+      
+      setProfile(transformedProfile);
     } catch (error: any) {
       console.error('Error fetching profile:', error);
       toast({
@@ -61,13 +73,24 @@ export const useSupabaseProfiles = () => {
 
       if (error) throw error;
       
-      setProfile(data);
+      // Transform and type-cast the data
+      const transformedProfile: UserProfile = {
+        id: data.id,
+        email: data.email,
+        full_name: data.full_name,
+        avatar_url: data.avatar_url,
+        user_plan: (data.user_plan as 'free' | 'premium' | 'pro') || 'free',
+        created_at: data.created_at || new Date().toISOString(),
+        updated_at: data.updated_at || new Date().toISOString(),
+      };
+      
+      setProfile(transformedProfile);
       toast({
         title: "Success",
         description: "Profile updated successfully!",
       });
       
-      return data;
+      return transformedProfile;
     } catch (error: any) {
       console.error('Error updating profile:', error);
       toast({

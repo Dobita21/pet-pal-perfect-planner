@@ -40,7 +40,21 @@ export const useSupabaseHealthMetrics = () => {
         .order('recorded_at', { ascending: false });
 
       if (error) throw error;
-      setHealthMetrics(data || []);
+      
+      // Transform and type-cast the data
+      const transformedData: HealthMetric[] = (data || []).map(item => ({
+        id: item.id,
+        pet_id: item.pet_id,
+        title: item.title,
+        value: item.value,
+        unit: item.unit,
+        trend: (item.trend as 'up' | 'down' | 'stable') || null,
+        status: (item.status as 'good' | 'warning' | 'critical') || null,
+        recorded_at: item.recorded_at || new Date().toISOString(),
+        created_at: item.created_at || new Date().toISOString(),
+      }));
+      
+      setHealthMetrics(transformedData);
     } catch (error: any) {
       console.error('Error fetching health metrics:', error);
       toast({
@@ -59,19 +73,34 @@ export const useSupabaseHealthMetrics = () => {
     try {
       const { data, error } = await supabase
         .from('health_metrics')
-        .insert([metricData])
+        .insert([{
+          ...metricData,
+          recorded_at: new Date().toISOString(),
+        }])
         .select()
         .single();
 
       if (error) throw error;
       
-      setHealthMetrics(prev => [data, ...prev]);
+      const transformedData: HealthMetric = {
+        id: data.id,
+        pet_id: data.pet_id,
+        title: data.title,
+        value: data.value,
+        unit: data.unit,
+        trend: (data.trend as 'up' | 'down' | 'stable') || null,
+        status: (data.status as 'good' | 'warning' | 'critical') || null,
+        recorded_at: data.recorded_at || new Date().toISOString(),
+        created_at: data.created_at || new Date().toISOString(),
+      };
+      
+      setHealthMetrics(prev => [transformedData, ...prev]);
       toast({
         title: "Success",
         description: "Health metric added successfully!",
       });
       
-      return data;
+      return transformedData;
     } catch (error: any) {
       console.error('Error adding health metric:', error);
       toast({

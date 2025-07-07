@@ -41,7 +41,25 @@ export const useSupabaseTasks = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setTasks(data || []);
+      
+      // Transform and type-cast the data
+      const transformedTasks: Task[] = (data || []).map(item => ({
+        id: item.id,
+        user_id: item.user_id,
+        pet_id: item.pet_id,
+        title: item.title,
+        description: item.description,
+        time: item.time,
+        type: item.type,
+        priority: (item.priority as 'high' | 'medium' | 'low') || 'medium',
+        completed: item.completed || false,
+        date: item.date || new Date().toISOString().split('T')[0],
+        recurrence: item.recurrence || 'none',
+        created_at: item.created_at || new Date().toISOString(),
+        updated_at: item.updated_at || new Date().toISOString(),
+      }));
+      
+      setTasks(transformedTasks);
     } catch (error: any) {
       console.error('Error fetching tasks:', error);
       toast({
@@ -69,13 +87,29 @@ export const useSupabaseTasks = () => {
 
       if (error) throw error;
       
-      setTasks(prev => [data, ...prev]);
+      const transformedTask: Task = {
+        id: data.id,
+        user_id: data.user_id,
+        pet_id: data.pet_id,
+        title: data.title,
+        description: data.description,
+        time: data.time,
+        type: data.type,
+        priority: (data.priority as 'high' | 'medium' | 'low') || 'medium',
+        completed: data.completed || false,
+        date: data.date || new Date().toISOString().split('T')[0],
+        recurrence: data.recurrence || 'none',
+        created_at: data.created_at || new Date().toISOString(),
+        updated_at: data.updated_at || new Date().toISOString(),
+      };
+      
+      setTasks(prev => [transformedTask, ...prev]);
       toast({
         title: "Success",
         description: "Task added successfully!",
       });
       
-      return data;
+      return transformedTask;
     } catch (error: any) {
       console.error('Error adding task:', error);
       toast({
@@ -101,13 +135,29 @@ export const useSupabaseTasks = () => {
 
       if (error) throw error;
       
-      setTasks(prev => prev.map(task => task.id === taskId ? data : task));
+      const transformedTask: Task = {
+        id: data.id,
+        user_id: data.user_id,
+        pet_id: data.pet_id,
+        title: data.title,
+        description: data.description,
+        time: data.time,
+        type: data.type,
+        priority: (data.priority as 'high' | 'medium' | 'low') || 'medium',
+        completed: data.completed || false,
+        date: data.date || new Date().toISOString().split('T')[0],
+        recurrence: data.recurrence || 'none',
+        created_at: data.created_at || new Date().toISOString(),
+        updated_at: data.updated_at || new Date().toISOString(),
+      };
+      
+      setTasks(prev => prev.map(task => task.id === taskId ? transformedTask : task));
       toast({
         title: "Success",
         description: "Task updated successfully!",
       });
       
-      return data;
+      return transformedTask;
     } catch (error: any) {
       console.error('Error updating task:', error);
       toast({
