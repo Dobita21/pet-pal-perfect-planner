@@ -1,9 +1,10 @@
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Bell, EllipsisVertical } from 'lucide-react';
-import type { Task } from '@/hooks/usePetData';
+import { Task } from '@/hooks/useSupabaseTasks';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -13,12 +14,13 @@ import {
 
 interface TaskCardProps {
   task: Task;
+  petName?: string;
   onComplete: (taskId: string) => void;
   onRemind: (taskId: string) => void;
-  onRemove?: (taskId: string) => void; // Add this line
+  onRemove?: (taskId: string) => void;
 }
 
-const TaskCard = ({ task, onComplete, onRemind, onRemove }: TaskCardProps) => {
+const TaskCard = ({ task, petName, onComplete, onRemind, onRemove }: TaskCardProps) => {
   const getTaskEmoji = (type: string) => {
     switch (type) {
       case 'feeding': return '🍽️';
@@ -42,9 +44,7 @@ const TaskCard = ({ task, onComplete, onRemind, onRemove }: TaskCardProps) => {
 
   const handleSetNotification = () => {
     onRemind(task.id);
-    // Add visual feedback
     console.log(`Notification set for task: ${task.title}`);
-    // You could also show a toast notification here
   };
 
   return (
@@ -73,7 +73,7 @@ const TaskCard = ({ task, onComplete, onRemind, onRemove }: TaskCardProps) => {
                 <span>{task.time}</span>
               </div>
               <span>•</span>
-              <span>{task.petName}</span>
+              <span>{petName || 'General Task'}</span>
             </div>
           </div>
         </div>
@@ -100,12 +100,14 @@ const TaskCard = ({ task, onComplete, onRemind, onRemove }: TaskCardProps) => {
                   <span className="text-pet-primary font-bold mr-2">✓</span>
                   Mark as complete
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => onRemove(task.id)}
-                  className="text-destructive"
-                >
-                  🗑️ Remove task
-                </DropdownMenuItem>
+                {onRemove && (
+                  <DropdownMenuItem
+                    onClick={() => onRemove(task.id)}
+                    className="text-destructive"
+                  >
+                    🗑️ Remove task
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           )}

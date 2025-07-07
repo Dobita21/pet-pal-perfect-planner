@@ -211,6 +211,7 @@ const Index = () => {
                   <TaskCard
                     key={todaysTasks[0].id}
                     task={todaysTasks[0]}
+                    petName={getPetName(todaysTasks[0].pet_id)}
                     onComplete={handleTaskComplete}
                     onRemind={handleTaskReminder}
                   />
@@ -432,6 +433,7 @@ const Index = () => {
                       >
                         <TaskCard
                           task={task}
+                          petName={getPetName(task.pet_id)}
                           onComplete={handleTaskComplete}
                           onRemind={handleTaskReminder}
                         />
@@ -451,6 +453,7 @@ const Index = () => {
                       >
                         <TaskCard
                           task={task}
+                          petName={getPetName(task.pet_id)}
                           onComplete={handleTaskComplete}
                           onRemind={handleTaskReminder}
                         />

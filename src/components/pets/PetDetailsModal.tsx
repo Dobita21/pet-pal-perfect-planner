@@ -1,10 +1,13 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Heart, Activity, Clock, MapPin, Edit, Plus, Menu, Image, Stethoscope } from 'lucide-react';
-import { Pet, HealthMetric, Task } from '@/hooks/usePetData';
+import { Pet } from '@/hooks/useSupabasePets';
+import { HealthMetric } from '@/hooks/useSupabaseHealthMetrics';
+import { Task } from '@/hooks/useSupabaseTasks';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { useNavigate } from 'react-router-dom';
 import UpdatePetModal from './UpdatePetModal';
@@ -54,7 +57,7 @@ const PetDetailsModal = ({
     }
   };
 
-  const isUploadedImage = pet.avatar.startsWith('data:') || pet.avatar.startsWith('http');
+  const isUploadedImage = pet.avatar && (pet.avatar.startsWith('data:') || pet.avatar.startsWith('http'));
 
   const handleEditPet = () => {
     setShowUpdateModal(true);
@@ -62,7 +65,7 @@ const PetDetailsModal = ({
 
   const handleCloseUpdateModal = () => {
     setShowUpdateModal(false);
-    onClose(); // Optionally close the details modal too
+    onClose();
   };
 
   const handleAddTask = () => {
@@ -121,7 +124,7 @@ const PetDetailsModal = ({
           <div className="space-y-2">
             {/* Pet Header and Basic Info in 2 columns */}
             <div className="grid grid-cols-[35%_65%] gap-1">
-              {/* Pet Photo */}
+              {/* Pet Photo */}  
               <div className="flex">
                 <div className="w-28 h-28 rounded-lg bg-gradient-to-br from-pet-primary/20 to-pet-secondary/20 flex items-center justify-center text-3xl overflow-hidden">
                   {isUploadedImage ? (
@@ -167,7 +170,7 @@ const PetDetailsModal = ({
                   <Card key={metric.id} className="p-3 rounded-xl">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-medium text-pet-primary">{metric.title}</span>
-                      <Badge variant="outline" className={`text-xs rounded-xl px-1 py-0 ${getStatusColor(metric.status)}`}>
+                      <Badge variant="outline" className={`text-xs rounded-xl px-1 py-0 ${getStatusColor(metric.status || '')}`}>
                         {metric.status}
                       </Badge>
                     </div>
