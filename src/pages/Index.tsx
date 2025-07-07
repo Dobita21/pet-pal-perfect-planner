@@ -10,15 +10,20 @@ import AddTaskModal from '@/components/schedule/AddTaskModal';
 import InfinityCarousel from '@/components/carousel/InfinityCarousel';
 import PetDetailsModal from '@/components/pets/PetDetailsModal';
 import { usePetData } from '@/hooks/usePetData';
+import { useSupabasePets } from '@/hooks/useSupabasePets';
+import { useAuth } from '@/hooks/useAuth';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Calendar, Heart, TrendingUp } from 'lucide-react';
-import { Pet } from '@/hooks/usePetData';
+import { Pet } from '@/hooks/useSupabasePets';
 import TaskDetailsModal from '@/components/schedule/TaskDetailsModal';
 import UserPlanSection from '@/components/plans/UserPlanSection';
+import EmptyPetCard from '@/components/pets/EmptyPetCard';
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { pets, addPet: addPetToSupabase } = useSupabasePets();
   const [activeTab, setActiveTab] = useState('schedule');
   const [showAddPetModal, setShowAddPetModal] = useState(false);
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
@@ -27,8 +32,9 @@ const Index = () => {
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [showTaskDetails, setShowTaskDetails] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [isSignedIn, setIsSignedIn] = useState(false); // Mock auth state
-  const { pets, tasks, healthMetrics, completeTask, setReminder, addPet, addTask } = usePetData();
+  
+  // Mock data for tasks and health metrics (will be replaced with Supabase later)
+  const { tasks, healthMetrics, completeTask, setReminder, addTask } = usePetData();
 
   const todaysTasks = tasks.filter(task => !task.completed);
   const completedTasks = tasks.filter(task => task.completed);
@@ -76,6 +82,23 @@ const Index = () => {
     setShowAddTaskModal(true);
   };
 
+  const handleAddPet = () => {
+    if (!user) {
+      navigate('/signin');
+      return;
+    }
+    setShowAddPetModal(true);
+  };
+
+  const handleAddPetSubmit = async (petData: Omit<Pet, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
+    try {
+      await addPetToSupabase(petData);
+      setShowAddPetModal(false);
+    } catch (error) {
+      console.error('Error adding pet:', error);
+    }
+  };
+
   const renderScheduleTab = () => (
     <div className="space-y-6">
       {/* Infinity Carousel Banner */}
@@ -99,18 +122,7 @@ const Index = () => {
 
       {/* Get Your First Pet Section - Show when no pets */}
       {pets.length === 0 && (
-        <Card className="p-6 text-center rounded-3xl pet-card-shadow bg-gradient-to-br from-pet-primary/10 to-pet-secondary/10">
-          <div className="text-6xl mb-4">🐕</div>
-          <h2 className="text-xl font-bold text-pet-primary mb-2">Get Your First Pet!</h2>
-          <p className="text-muted-foreground mb-4">Start your journey by adding your beloved companion</p>
-          <Button 
-            onClick={() => setShowAddPetModal(true)}
-            className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl px-8"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Your Pet
-          </Button>
-        </Card>
+        <EmptyPetCard onAddPet={handleAddPet} />
       )}
 
       {/* My Pets - Horizontal Scroll */}
@@ -118,7 +130,7 @@ const Index = () => {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-foreground">My Pets</h2>
-            <Button size="sm" variant="outline" onClick={() => setShowAddPetModal(true)} className="rounded-3xl border-pet-primary text-pet-primary hover:bg-pet-primary/90 hover:text-white">
+            <Button size="sm" variant="outline" onClick={handleAddPet} className="rounded-3xl border-pet-primary text-pet-primary hover:bg-pet-primary/90 hover:text-white">
               + Add Pet
             </Button>
           </div>
@@ -175,24 +187,14 @@ const Index = () => {
         <Button 
           size="sm" 
           className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl" 
-          onClick={() => setShowAddPetModal(true)}
+          onClick={handleAddPet}
         >
           + Add Pet
         </Button>
       </div>
 
       {pets.length === 0 ? (
-        <Card className="p-8 text-center rounded-3xl">
-          <div className="text-6xl mb-4">🐾</div>
-          <h3 className="text-lg font-semibold text-pet-primary mb-2">No pets yet</h3>
-          <p className="text-muted-foreground mb-4">Add your first pet to get started</p>
-          <Button 
-            onClick={() => setShowAddPetModal(true)}
-            className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl"
-          >
-            Add Pet
-          </Button>
-        </Card>
+        <EmptyPetCard onAddPet={handleAddPet} />
       ) : (
         <div className="grid grid-cols-1 gap-4">
           {pets.map(pet => (
@@ -268,7 +270,7 @@ const Index = () => {
 
   const handleAddTaskNoPet = (date: Date) => {
     setSelectedPetForTask(null);
-    setAddTaskDate(date); // store the date
+    setAddTaskDate(date);
     setAddTaskModalOpen(true);
   };
 
@@ -375,7 +377,6 @@ const Index = () => {
         title={getPageTitle()} 
         onProfileClick={handleProfileClick}
         onSignInClick={handleSignInClick}
-        isSignedIn={isSignedIn}
       />
       
       <main className="px-4 py-6 pb-24 animate-fade-in">
@@ -387,7 +388,7 @@ const Index = () => {
       <AddPetModal 
         isOpen={showAddPetModal}
         onClose={() => setShowAddPetModal(false)}
-        onAddPet={addPet}
+        onAddPet={handleAddPetSubmit}
       />
       
       <AddTaskModal
@@ -396,7 +397,7 @@ const Index = () => {
         pets={pets}
         onAddTask={addTask}
         initialPet={selectedPetForTask}
-        initialDate={addTaskDate} // <-- pass the date here!
+        initialDate={addTaskDate}
       />
 
       <PetDetailsModal
@@ -406,7 +407,6 @@ const Index = () => {
         healthMetrics={healthMetrics}
         petTasks={selectedPet ? getPetTasks(selectedPet.name) : []}
         onEditPet={handleEditPet}
-        // onAddTask={handleAddTaskForPet}
         onAddTask={handleAddTask}
       />
 

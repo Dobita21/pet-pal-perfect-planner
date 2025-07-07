@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import MobileHeader from '@/components/layout/MobileHeader';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -49,7 +48,6 @@ const Health = () => {
       <MobileHeader 
         title="Health"
         onProfileClick={() => navigate('/profile')}
-        isSignedIn={true}
       />
       
       <main className="px-4 py-6 pb-24 animate-fade-in">
