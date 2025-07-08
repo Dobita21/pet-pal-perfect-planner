@@ -15,7 +15,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useSupabasePets } from '@/hooks/useSupabasePets';
 import { useSupabaseHealthMetrics } from '@/hooks/useSupabaseHealthMetrics';
 import { useAuth } from '@/hooks/useAuth';
-import { Heart, Activity, TrendingUp, TrendingDown, Minus, Menu, Upload, Camera, CheckCircle, AlertCircle } from 'lucide-react';
+import { Heart, Activity, TrendingUp, TrendingDown, Minus, Menu, Upload, Camera, CheckCircle, AlertCircle, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Health = () => {
@@ -43,6 +43,8 @@ const Health = () => {
     note: '',
     images: [] as File[]
   });
+
+  const [healthNotes, setHealthNotes] = useState('');
 
   const [vaccines, setVaccines] = useState([
     { name: 'Rabies', completed: false, dueDate: '2024-08-15' },
@@ -177,6 +179,19 @@ const Health = () => {
     ));
   };
 
+  const saveVetRecord = () => {
+    console.log('Saving vet record:', vetRecord);
+    // TODO: Save to Supabase
+    setShowVetModal(false);
+    setVetRecord({ title: '', note: '', images: [] });
+  };
+
+  const saveHealthNotes = () => {
+    console.log('Saving health notes:', healthNotes);
+    // TODO: Save to Supabase
+    setShowNotesModal(false);
+  };
+
   const completedVaccines = vaccines.filter(v => v.completed).length;
   const totalVaccines = vaccines.length;
   const upcomingVaccines = vaccines.filter(v => !v.completed).length;
@@ -210,46 +225,17 @@ const Health = () => {
     <div className="min-h-screen bg-background">
       <MobileHeader 
         title="Health"
-        onProfileClick={() => navigate('/profile')}
+        onProfileClick={() => setActiveTab('profile')}
       />
       
       <main className="px-4 py-6 pb-24 animate-fade-in">
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-pet-primary">Pet Health</h2>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-2xl border-pet-primary text-pet-primary hover:bg-pet-primary/10">
-                  <Menu className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-white">
-                <DropdownMenuItem onClick={handleAddRecord}>
-                  <Heart className="h-4 w-4 mr-2" />
-                  Add Health Record
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleVetRecords}>
-                  <Camera className="h-4 w-4 mr-2" />
-                  Vet Records
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleVaccinations}>
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  Vaccinations
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleNotes}>
-                  <Activity className="h-4 w-4 mr-2" />
-                  Notes
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
           {pets.length === 0 ? (
             <Card className="p-6 text-center rounded-3xl">
               <div className="text-4xl mb-4">🐾</div>
               <h3 className="text-lg font-semibold mb-2">No Pets Yet</h3>
               <p className="text-muted-foreground mb-4">Add your first pet to start tracking their health</p>
-              <Button onClick={() => navigate('/')} className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl">
+              <Button onClick={() => setActiveTab('mypets')} className="bg-pet-primary hover:bg-pet-primary/90 rounded-3xl">
                 Add Your First Pet
               </Button>
             </Card>
@@ -282,11 +268,36 @@ const Health = () => {
 
               {/* Health Metrics */}
               <div>
-                <div className="flex items-center mb-4">
+                <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-pet-primary flex items-center">
                     <Heart className="h-4 w-4 mr-2" />
                     Health Metrics
                   </h3>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="rounded-2xl border-pet-primary text-pet-primary hover:bg-pet-primary/10">
+                        <Menu className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56 bg-white">
+                      <DropdownMenuItem onClick={handleAddRecord}>
+                        <Heart className="h-4 w-4 mr-2" />
+                        Add Health Record
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleVetRecords}>
+                        <Camera className="h-4 w-4 mr-2" />
+                        Vet Records
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleVaccinations}>
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        Vaccinations
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleNotes}>
+                        <Activity className="h-4 w-4 mr-2" />
+                        Notes
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 
                 <div className="grid grid-cols-1 gap-4">
@@ -305,6 +316,17 @@ const Health = () => {
                             <span className="font-medium text-pet-primary">{metric.title}</span>
                           </div>
                           <div className="flex items-center space-x-2">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                  <MoreVertical className="h-3 w-3" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem>Edit</DropdownMenuItem>
+                                <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                             {getTrendIcon(metric.trend || 'stable')}
                             <Badge variant="outline" className={`text-xs rounded-xl ${getStatusColor(metric.status || 'good')}`}>
                               {metric.status || 'good'}
@@ -516,7 +538,7 @@ const Health = () => {
               <Button type="button" variant="outline" onClick={() => setShowVetModal(false)} className="rounded-2xl">
                 Cancel
               </Button>
-              <Button type="button" className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl">
+              <Button type="button" onClick={saveVetRecord} className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl">
                 Save Record
               </Button>
             </div>
@@ -596,6 +618,8 @@ const Health = () => {
           
           <div className="space-y-4">
             <Textarea
+              value={healthNotes}
+              onChange={(e) => setHealthNotes(e.target.value)}
               placeholder="Add general health notes for your pet..."
               className="rounded-2xl min-h-[120px]"
             />
@@ -604,7 +628,7 @@ const Health = () => {
               <Button type="button" variant="outline" onClick={() => setShowNotesModal(false)} className="rounded-2xl">
                 Cancel
               </Button>
-              <Button type="button" className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl">
+              <Button type="button" onClick={saveHealthNotes} className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl">
                 Save Note
               </Button>
             </div>
