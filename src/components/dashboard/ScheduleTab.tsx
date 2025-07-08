@@ -7,7 +7,8 @@ import PetCard from '@/components/pets/PetCard';
 import TaskCard from '@/components/schedule/TaskCard';
 import InfinityCarousel from '@/components/carousel/InfinityCarousel';
 import EmptyPetCard from '@/components/pets/EmptyPetCard';
-import { Pet, Task } from '@/hooks/useSupabaseTasks';
+import { Pet } from '@/hooks/useSupabasePets';
+import { Task } from '@/hooks/useSupabaseTasks';
 
 interface ScheduleTabProps {
   user: any;

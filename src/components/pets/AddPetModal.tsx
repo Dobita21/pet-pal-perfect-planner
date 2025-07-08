@@ -24,6 +24,7 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
     name: '',
     species: '',
     breed: '',
+    gender: '',
     notes: ''
   });
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -88,13 +89,14 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
         breed: formData.breed,
         age: calculatedAge,
         avatar: uploadedImage,
-        notes: formData.notes
+        notes: formData.notes,
+        gender: formData.gender
       };
 
       await onAddPet(newPet);
       
       // Reset form
-      setFormData({ name: '', species: '', breed: '', notes: '' });
+      setFormData({ name: '', species: '', breed: '', gender: '', notes: '' });
       setUploadedImage(null);
       setBirthYear('');
       setBirthMonth('');
@@ -120,17 +122,6 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
 
   const removeImage = () => {
     setUploadedImage(null);
-  };
-
-  const getSpeciesEmoji = (species: string) => {
-    switch (species.toLowerCase()) {
-      case 'dog': return '🐕';
-      case 'cat': return '🐱';
-      case 'bird': return '🦜';
-      case 'fish': return '🐠';
-      case 'rabbit': return '🐰';
-      default: return '🐾';
-    }
   };
 
   return (
@@ -214,15 +205,28 @@ const AddPetModal = ({ isOpen, onClose, onAddPet }: AddPetModalProps) => {
             </div>
 
             <div className="space-y-2">
-              <Input
-                id="breed"
-                value={formData.breed}
-                onChange={(e) => setFormData({ ...formData, breed: e.target.value })}
-                placeholder="Enter breed"
-                className="rounded-3xl"
-                required
-              />
+              <Select value={formData.gender} onValueChange={(value) => setFormData({ ...formData, gender: value })}>
+                <SelectTrigger className="rounded-3xl">
+                  <SelectValue placeholder="Select gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">♂️ Male</SelectItem>
+                  <SelectItem value="female">♀️ Female</SelectItem>
+                  <SelectItem value="unknown">❓ Unknown</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Input
+              id="breed"
+              value={formData.breed}
+              onChange={(e) => setFormData({ ...formData, breed: e.target.value })}
+              placeholder="Enter breed"
+              className="rounded-3xl"
+              required
+            />
           </div>
 
           <div className="space-y-2">

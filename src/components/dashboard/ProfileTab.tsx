@@ -3,7 +3,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Pet, Task } from '@/hooks/useSupabaseTasks';
+import { Pet } from '@/hooks/useSupabasePets';
+import { Task } from '@/hooks/useSupabaseTasks';
 
 interface ProfileTabProps {
   user: any;

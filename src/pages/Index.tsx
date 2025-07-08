@@ -12,12 +12,11 @@ import ScheduleTab from '@/components/dashboard/ScheduleTab';
 import MyPetsTab from '@/components/dashboard/MyPetsTab';
 import TasksTab from '@/components/dashboard/TasksTab';
 import ProfileTab from '@/components/dashboard/ProfileTab';
-import { useSupabasePets } from '@/hooks/useSupabasePets';
+import { useSupabasePets, Pet } from '@/hooks/useSupabasePets';
 import { useSupabaseTasks, Task } from '@/hooks/useSupabaseTasks';
 import { useSupabaseHealthMetrics } from '@/hooks/useSupabaseHealthMetrics';
 import { useSupabaseProfiles } from '@/hooks/useSupabaseProfiles';
 import { useAuth } from '@/hooks/useAuth';
-import { Pet } from '@/hooks/useSupabaseTasks';
 
 const Index = () => {
   const navigate = useNavigate();

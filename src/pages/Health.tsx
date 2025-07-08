@@ -5,17 +5,29 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useSupabasePets } from '@/hooks/useSupabasePets';
 import { useSupabaseHealthMetrics } from '@/hooks/useSupabaseHealthMetrics';
 import { useAuth } from '@/hooks/useAuth';
-import { Heart, Activity, TrendingUp, TrendingDown, Minus, ArrowLeft } from 'lucide-react';
+import { Heart, Activity, TrendingUp, TrendingDown, Minus, ArrowLeft, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Health = () => {
   const { user } = useAuth();
   const { pets } = useSupabasePets();
-  const { healthMetrics } = useSupabaseHealthMetrics();
+  const { healthMetrics, addHealthMetric } = useSupabaseHealthMetrics();
   const [selectedPet, setSelectedPet] = useState(pets[0]?.id || '');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newMetric, setNewMetric] = useState({
+    title: '',
+    value: '',
+    unit: '',
+    status: 'good',
+    trend: 'stable'
+  });
   const navigate = useNavigate();
 
   const getSpeciesEmoji = (species: string) => {
@@ -54,8 +66,34 @@ const Health = () => {
       navigate('/signin');
       return;
     }
-    // Would open add health record modal
-    console.log('Add health record');
+    setShowAddModal(true);
+  };
+
+  const handleSubmitMetric = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedPet) return;
+
+    try {
+      await addHealthMetric({
+        pet_id: selectedPet,
+        title: newMetric.title,
+        value: newMetric.value,
+        unit: newMetric.unit,
+        status: newMetric.status,
+        trend: newMetric.trend
+      });
+
+      setNewMetric({
+        title: '',
+        value: '',
+        unit: '',
+        status: 'good',
+        trend: 'stable'
+      });
+      setShowAddModal(false);
+    } catch (error) {
+      console.error('Error adding health metric:', error);
+    }
   };
 
   if (!user) {
@@ -149,7 +187,8 @@ const Health = () => {
                     Health Metrics
                   </h3>
                   <Button size="sm" variant="outline" className="rounded-2xl border-pet-primary text-pet-primary hover:bg-pet-primary/10" onClick={handleAddRecord}>
-                    + Add Record
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add Record
                   </Button>
                 </div>
                 
@@ -182,7 +221,7 @@ const Health = () => {
                         </div>
                         
                         <p className="text-xs text-muted-foreground">
-                          Last updated: {new Date(metric.recorded_at).toLocaleDateString()}
+                          Last updated: {new Date(metric.recorded_at || metric.created_at || '').toLocaleDateString()}
                         </p>
                       </Card>
                     ))
@@ -214,6 +253,92 @@ const Health = () => {
       </main>
       
       <BottomNavigation activeTab="health" onTabChange={() => {}} />
+
+      {/* Add Health Metric Modal */}
+      <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
+        <DialogContent className="w-[95vw] max-w-md rounded-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-pet-primary">Add Health Record</DialogTitle>
+          </DialogHeader>
+          
+          <form onSubmit={handleSubmitMetric} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Metric Name</Label>
+              <Input
+                id="title"
+                value={newMetric.title}
+                onChange={(e) => setNewMetric({ ...newMetric, title: e.target.value })}
+                placeholder="e.g. Weight, Temperature"
+                className="rounded-2xl"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="value">Value</Label>
+                <Input
+                  id="value"
+                  value={newMetric.value}
+                  onChange={(e) => setNewMetric({ ...newMetric, value: e.target.value })}
+                  placeholder="e.g. 25.5"
+                  className="rounded-2xl"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="unit">Unit</Label>
+                <Input
+                  id="unit"
+                  value={newMetric.unit}
+                  onChange={(e) => setNewMetric({ ...newMetric, unit: e.target.value })}
+                  placeholder="e.g. lbs, °F"
+                  className="rounded-2xl"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="status">Status</Label>
+                <Select value={newMetric.status} onValueChange={(value) => setNewMetric({ ...newMetric, status: value })}>
+                  <SelectTrigger className="rounded-2xl">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="good">✅ Good</SelectItem>
+                    <SelectItem value="warning">⚠️ Warning</SelectItem>
+                    <SelectItem value="critical">🚨 Critical</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="trend">Trend</Label>
+                <Select value={newMetric.trend} onValueChange={(value) => setNewMetric({ ...newMetric, trend: value })}>
+                  <SelectTrigger className="rounded-2xl">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="up">📈 Improving</SelectItem>
+                    <SelectItem value="stable">➡️ Stable</SelectItem>
+                    <SelectItem value="down">📉 Declining</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button type="button" variant="outline" onClick={() => setShowAddModal(false)} className="rounded-2xl">
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-pet-primary hover:bg-pet-primary/90 rounded-2xl">
+                Add Record
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

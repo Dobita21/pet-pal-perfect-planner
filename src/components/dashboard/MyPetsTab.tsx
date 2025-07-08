@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import PetCard from '@/components/pets/PetCard';
 import EmptyPetCard from '@/components/pets/EmptyPetCard';
-import { Pet } from '@/hooks/useSupabaseTasks';
+import { Pet } from '@/hooks/useSupabasePets';
 
 interface MyPetsTabProps {
   user: any;
