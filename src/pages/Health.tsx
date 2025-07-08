@@ -25,8 +25,8 @@ const Health = () => {
     title: '',
     value: '',
     unit: '',
-    status: 'good',
-    trend: 'stable'
+    status: 'good' as 'good' | 'warning' | 'critical',
+    trend: 'stable' as 'stable' | 'up' | 'down'
   });
   const navigate = useNavigate();
 
@@ -87,8 +87,8 @@ const Health = () => {
         title: '',
         value: '',
         unit: '',
-        status: 'good',
-        trend: 'stable'
+        status: 'good' as 'good' | 'warning' | 'critical',
+        trend: 'stable' as 'stable' | 'up' | 'down'
       });
       setShowAddModal(false);
     } catch (error) {
