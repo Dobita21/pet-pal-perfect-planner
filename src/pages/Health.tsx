@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import MobileHeader from '@/components/layout/MobileHeader';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -302,7 +301,7 @@ const Health = () => {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>
-                <Select value={newMetric.status} onValueChange={(value) => setNewMetric({ ...newMetric, status: value })}>
+                <Select value={newMetric.status} onValueChange={(value: 'good' | 'warning' | 'critical') => setNewMetric({ ...newMetric, status: value })}>
                   <SelectTrigger className="rounded-2xl">
                     <SelectValue />
                   </SelectTrigger>
@@ -315,7 +314,7 @@ const Health = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="trend">Trend</Label>
-                <Select value={newMetric.trend} onValueChange={(value) => setNewMetric({ ...newMetric, trend: value })}>
+                <Select value={newMetric.trend} onValueChange={(value: 'stable' | 'up' | 'down') => setNewMetric({ ...newMetric, trend: value })}>
                   <SelectTrigger className="rounded-2xl">
                     <SelectValue />
                   </SelectTrigger>
